@@ -84,6 +84,42 @@ cv::Mat CreateStandardROI(int size, int roiShape)
     }
     return Roi;
 }
+//-----------------------------------------------------------------------------------------------
+void Preprocess(cv::Mat Im, int preprocessType, int preprocesKernelSize)
+{
+    switch (preprocessType)
+    {
+    case 1:
+        blur(Im, Im, Size(preprocesKernelSize, preprocesKernelSize));
+        break;
+    case 2:
+        medianBlur(Im, Im, preprocesKernelSize);
+        break;
+    default:
+        break;
+    }    
+}
+//-----------------------------------------------------------------------------------------------
+void GlobalNormalisation(cv::Mat ImF, int normalisationType, float *maxNormGlobal, float *minNormGlobal)
+{
+    switch (ProcOptions.normalisation)
+    {
+    case 1:
+        NormParamsMinMax(ImF, &maxNormGlobal, &minNormGlobal);
+        break;
+    case 3:
+        NormParamsMeanP3Std(ImF, &maxNormGlobal, &minNormGlobal);
+        break;
+    case 5:
+        NormParams1to99perc(ImF, &maxNormGlobal, &minNormGlobal);
+        break;
+    default:
+        break;
+    }    
+}
+
+//-----------------------------------------------------------------------------------------------
+
 
 //-----------------------------------------------------------------------------------------------
 // my functions
@@ -185,6 +221,30 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 
     Roi = CreateStandardROI(params.tileWidth, params.tileShape);
     imshow("Roi", Roi*255);
+    
+    int stepNr = (int)(180.0 / params.angleStep); // angle step for computations (number of steps)
+    float *CorrelationAvg = new float[stepNr];
+    int *AnglesAvg = new int[stepNr]; // vector for best angles histogtam
+    //Matrix declarations
+    Mat ImInF, ImToShow, SmallIm, COM, SmallImToShow;
+    
+    ImIn.convertTo(ImInF, CV_32F);
+    
+    
+    float maxNormGlobal = 65535;
+    float minNormGlobal = 0;
+    
+    GlobalNormalisation(ImInF, params.normalisation , &maxNormGlobal, &minNormGlobal);
+    
+    
+    
+    
+    // release memory
+    ImInF.release();
+    ImToShow.release();
+    SmallIm.release();
+    COM.release();
+    SmallImToShow.release();
 }
 //-----------------------------------------------------------------------------------------------
 void MainWindow::ReloadFileList()

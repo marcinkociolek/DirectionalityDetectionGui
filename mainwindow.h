@@ -22,12 +22,17 @@ public:
     bool stopProcess;
 
     cv::Mat ImIn;
+    cv::Mat Roi;
+    cv::Mat SmallIm;
     //std::string CurrentFileName;
     boost::filesystem::path FileToOpen;
     boost::filesystem::path CurrentDir;
     boost::filesystem::path InputDirectory;
 
     void ImProcess(cv::Mat ImIn,  DirDetectionParams params);
+
+    //-----------------------------------------------------------------------------------------------
+    void MainWindow::ReloadFileList();
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -87,7 +92,9 @@ private slots:
 
     void on_spinBoxOffsetStep_valueChanged(int arg1);
 
-    void on_doubleSpinBox_valueChanged(double arg1);
+    void on_doubleSpinBoxAngleStep_valueChanged(double arg1);
+
+    void on_LineEditFilePattern_returnPressed();
 
 private:
     Ui::MainWindow *ui;

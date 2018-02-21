@@ -57,7 +57,7 @@ public:
     int directionLineWidth;
     int directionLineLength;
 
-    float angleStep;
+    double angleStep;
 
     // functions
     DirDetectionParams();
