@@ -13,7 +13,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "DispLib.h"
-
+#include "NormalizationLib.h"
 
 using namespace std;
 using namespace boost::filesystem;
@@ -105,13 +105,13 @@ void GlobalNormalisation(cv::Mat ImF, int normalisation, float *maxNormGlobal, f
     switch (normalisation)
     {
     case 1:
-        NormParamsMinMax(ImF, &maxNormGlobal, &minNormGlobal);
+        NormParamsMinMax(ImF, maxNormGlobal, minNormGlobal);
         break;
     case 3:
-        NormParamsMeanP3Std(ImF, &maxNormGlobal, &minNormGlobal);
+        NormParamsMeanP3Std(ImF, maxNormGlobal, minNormGlobal);
         break;
     case 5:
-        NormParams1to99perc(ImF, &maxNormGlobal, &minNormGlobal);
+        NormParams1to99perc(ImF, maxNormGlobal, minNormGlobal);
         break;
     default:
         break;
@@ -223,6 +223,7 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
     imshow("Roi", Roi*255);
 
     int stepNr = (int)(180.0 / params.angleStep); // angle step for computations (number of steps)
+
     float *CorrelationAvg = new float[stepNr];
     int *AnglesAvg = new int[stepNr]; // vector for best angles histogtam
     //Matrix declarations
@@ -236,10 +237,16 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 
     GlobalNormalisation(ImInF, params.normalisation , &maxNormGlobal, &minNormGlobal);
 
+    ParamsString.empty();
+    ParamsString = params.ShowParams();
 
+    string OutString = ParamsString;
+    //OutString += "FileName \t" +
 
 
     // release memory
+    delete[] CorrelationAvg;
+    delete[] AnglesAvg;
     ImInF.release();
     ImToShow.release();
     SmallIm.release();
@@ -366,7 +373,7 @@ void MainWindow::on_pushButtonSelectInFolder_clicked()
     }
 
     ui->LineEditInDirectory->setText(QString::fromWCharArray(InputDirectory.wstring().c_str()));
-
+    params.InFolderName = InputDirectory.string();
     ReloadFileList();
 }
 
@@ -572,4 +579,37 @@ void MainWindow::on_LineEditFilePattern_returnPressed()
     params.InFilePattern = ui->LineEditFilePattern->text().toStdString();
     ReloadFileList();
     ImProcess(ImIn,params);
+}
+
+void MainWindow::on_pushButtonSelectOutFolder_clicked()
+{
+    QFileDialog dialog(this, "Open Folder");
+    dialog.setFileMode(QFileDialog::Directory);
+    //dialog.setDirectory(InputDirectory.string().c_str());
+
+    if(dialog.exec())
+    {
+        OutputDirectory = dialog.directory().path().toStdWString();
+    }
+    else
+         return;
+
+    //InputDirectory = dialog.getExistingDirectory().toStdWString();//  toStdString());
+    if (!exists(OutputDirectory))
+    {
+        QMessageBox msgBox;
+        msgBox.setText((OutputDirectory.string()+ " not exists ").c_str());
+        msgBox.exec();
+        OutputDirectory = "c:\\";
+    }
+    if (!is_directory(OutputDirectory))
+    {
+        QMessageBox msgBox;
+        msgBox.setText((OutputDirectory.string()+ " This is not a directory path ").c_str());
+        msgBox.exec();
+        OutputDirectory = "c:\\";
+    }
+
+    ui->LineEditOutDirectory->setText(QString::fromWCharArray(OutputDirectory.wstring().c_str()));
+    params.OutFolderName1 = OutputDirectory.string();
 }

@@ -28,6 +28,9 @@ public:
     boost::filesystem::path FileToOpen;
     boost::filesystem::path CurrentDir;
     boost::filesystem::path InputDirectory;
+    boost::filesystem::path OutputDirectory;
+
+    std::string ParamsString;
 
     void ImProcess(cv::Mat ImIn,  DirDetectionParams params);
 
@@ -95,6 +98,8 @@ private slots:
     void on_doubleSpinBoxAngleStep_valueChanged(double arg1);
 
     void on_LineEditFilePattern_returnPressed();
+
+    void on_pushButtonSelectOutFolder_clicked();
 
 private:
     Ui::MainWindow *ui;
