@@ -240,10 +240,64 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
     ParamsString.empty();
     ParamsString = params.ShowParams();
 
-    string OutString = ParamsString;
-    //OutString += "FileName \t" +
+    string OutDataString = ParamsString;
+    OutDataString += "FileName \t" + FileToOpen.string();
+    OutDataString += "Tile Y\tTile X\t";
+    OutDataString += "Angle \t";
+    OutDataString += "Mean Intensity\tTile min norm\tTile max norm\t";
+    OutDataString += "\n";
 
+    for (int y = params.tileOffsetX; y <= (maxY - params.tileOffsetX); y += params.tileShiftX)
+    {
+        for (int x = params.tileOffsetX; x <= (maxX - params.tileOffsetX); x += params.tileShiftX)
+        {
+            ImInF(Rect(x - Roi.cols / 2, y - Roi.rows / 2, Roi.cols, Roi.rows)).copyTo(SmallIm);
+            float maxNorm, minNorm;
+            switch (ProcOptions.normalisation)
+            {
+            case 1:
+                NormParamsMinMax(SmallIm, Roi, 1, &maxNorm, &minNorm);
+                break;
+            case 3:
+                NormParamsMeanP3Std(SmallIm, Roi, 1, &maxNorm, &minNorm);
+                break;
+            case 5:
+                NormParams1to99perc(SmallIm, Roi, 1, &maxNorm, &minNorm);
+                break;
+            default:
+                maxNorm = maxNormGlobal;
+                minNorm = minNormGlobal;
+                break;
+            }
 
+            for (int i = 0; i < stepNr; i++)
+            {
+                //Angles[i] = 0;
+                CorrelationAvg[i] = 0;
+            }
+            int bestAngleCorAvg;
+
+                // ofset loop
+            for (int offset = ProcOptions.minOfset; offset <= ProcOptions.maxOfset; offset += 1)
+            {
+                for (int angleIndex = 0; angleIndex < stepNr; angleIndex++)
+                {
+                    float angle = ProcOptions.angleStep * angleIndex;
+
+                    COM.release();
+
+                    if (ProcOptions.tileShape < 2)
+                        COM = COMCardone4(SmallIm, offset, angle, ProcOptions.binCount, maxNorm, minNorm);
+                    else
+                        COM = COMCardoneRoi(SmallIm, Roi, offset, angle, ProcOptions.binCount, maxNorm, minNorm, 1);
+
+                    CorrelationAvg[angleIndex] = COMCorrelation(COM);
+                }
+            }
+            // best angle for avg
+            bestAngleCorAvg = FindBestAngleMax(CorrelationAvg, stepNr);
+
+    }
     // release memory
     delete[] CorrelationAvg;
     delete[] AnglesAvg;
