@@ -24,6 +24,7 @@ public:
     cv::Mat ImIn;
     cv::Mat Roi;
     cv::Mat SmallIm;
+    cv::Mat ImToShow;
     //std::string CurrentFileName;
     boost::filesystem::path FileToOpen;
     boost::filesystem::path CurrentDir;
@@ -35,7 +36,10 @@ public:
     void ImProcess(cv::Mat ImIn,  DirDetectionParams params);
 
     //-----------------------------------------------------------------------------------------------
+
     void MainWindow::ReloadFileList();
+    void MainWindow::PrepareImShow();
+    void MainWindow::ShowDirection(int y, int x, float direction, int lineWidth, int lineLength);
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

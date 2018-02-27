@@ -12,8 +12,13 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <math.h>
+
 #include "DispLib.h"
 #include "NormalizationLib.h"
+#include "HaralickLib.h"
+
+#define PI 3.14159265
 
 using namespace std;
 using namespace boost::filesystem;
@@ -218,6 +223,7 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
         return;
     ImShowPC(ImIn,params);
     ImShowGray(ImIn,params);
+    PrepareImShow();
 
     Roi = CreateStandardROI(params.tileWidth, params.tileShape);
     imshow("Roi", Roi*255);
@@ -231,6 +237,8 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 
     ImIn.convertTo(ImInF, CV_32F);
 
+    int maxX = ImInF.cols;
+    int maxY = ImInF.rows;
 
     float maxNormGlobal = 65535;
     float minNormGlobal = 0;
@@ -247,13 +255,15 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
     OutDataString += "Mean Intensity\tTile min norm\tTile max norm\t";
     OutDataString += "\n";
 
-    for (int y = params.tileOffsetX; y <= (maxY - params.tileOffsetX); y += params.tileShiftX)
+    int maxOffset = params.minOffset + params. offsetCount + params.offsetStep;
+
+    for (int y = params.tileOffsetX; y <= (maxY - params.tileOffsetX); y += params.tileShiftY)
     {
         for (int x = params.tileOffsetX; x <= (maxX - params.tileOffsetX); x += params.tileShiftX)
         {
             ImInF(Rect(x - Roi.cols / 2, y - Roi.rows / 2, Roi.cols, Roi.rows)).copyTo(SmallIm);
             float maxNorm, minNorm;
-            switch (ProcOptions.normalisation)
+            switch (params.normalisation)
             {
             case 1:
                 NormParamsMinMax(SmallIm, Roi, 1, &maxNorm, &minNorm);
@@ -278,25 +288,28 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
             int bestAngleCorAvg;
 
                 // ofset loop
-            for (int offset = ProcOptions.minOfset; offset <= ProcOptions.maxOfset; offset += 1)
+
+            for (int offset = params.minOffset; offset <= maxOffset; offset += params.offsetStep)
             {
                 for (int angleIndex = 0; angleIndex < stepNr; angleIndex++)
                 {
-                    float angle = ProcOptions.angleStep * angleIndex;
+                    float angle = params.angleStep * angleIndex;
 
                     COM.release();
 
-                    if (ProcOptions.tileShape < 2)
-                        COM = COMCardone4(SmallIm, offset, angle, ProcOptions.binCount, maxNorm, minNorm);
+                    if (params.tileShape < 2)
+                        COM = COMCardone5(SmallIm, offset, angle, params.binCount, maxNorm, minNorm);
                     else
-                        COM = COMCardoneRoi(SmallIm, Roi, offset, angle, ProcOptions.binCount, maxNorm, minNorm, 1);
+                        COM = COMCardoneRoi5(SmallIm, Roi, offset, angle, params.binCount, maxNorm, minNorm, 1);
 
                     CorrelationAvg[angleIndex] = COMCorrelation(COM);
                 }
             }
             // best angle for avg
             bestAngleCorAvg = FindBestAngleMax(CorrelationAvg, stepNr);
-
+            ShowDirection(y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
+            waitKey(80);
+        }
     }
     // release memory
     delete[] CorrelationAvg;
@@ -332,6 +345,25 @@ void MainWindow::ReloadFileList()
         ui->ListWidgetFiles->addItem(PathLocal.filename().string().c_str());
     }
 }
+//-----------------------------------------------------------------------------------------------
+void MainWindow::PrepareImShow()
+{
+    ImToShow = ShowImage16PseudoColor(ImIn, params.displayPCMin, params.displayPCMax);
+    DrawTilesOnImage(ImToShow, params);
+    imshow("ImOut", ImToShow);
+
+}
+//-----------------------------------------------------------------------------------------------
+void MainWindow::ShowDirection(int y, int x, float direction, int lineWidth, int lineLength)
+{
+    int lineOffsetX = (int)round(lineLength * 0.5 *  sin((double)direction* PI / 180.0));
+    int lineOffsetY = (int)round(lineLength * 0.5 * cos((double)direction* PI / 180.0));
+
+    line(ImToShow, Point(x - lineOffsetX, y - lineOffsetY), Point(x + lineOffsetX, y + lineOffsetY), Scalar(0, 0.0, 0.0, 0.0), lineWidth);
+
+    imshow("ImOut", ImToShow);
+}
+//-----------------------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------------------
 // system functions
