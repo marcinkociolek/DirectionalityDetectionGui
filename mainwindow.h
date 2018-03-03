@@ -105,6 +105,10 @@ private slots:
 
     void on_pushButtonSelectOutFolder_clicked();
 
+    void on_CheckBoxShowOutputText_toggled(bool checked);
+
+    void on_CheckBoxCalculateDirectionality_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
 };

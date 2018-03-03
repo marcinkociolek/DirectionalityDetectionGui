@@ -47,6 +47,8 @@ public:
     float fixMinNorm;
     float fixMaxNorm ;
 
+    double angleStep;
+
     float displayGrayMax;
     float displayGrayMin;
 
@@ -57,7 +59,8 @@ public:
     int directionLineWidth;
     int directionLineLength;
 
-    double angleStep;
+    bool showOutputText;
+    bool calculateDirectionality;
 
     // functions
     DirDetectionParams();

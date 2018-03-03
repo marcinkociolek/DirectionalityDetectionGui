@@ -33,10 +33,10 @@ cv::Mat CreateStandardROI(int size, int roiShape)
     switch (roiShape) // Different tile shapes
     {
     case 1: // Rectangle
-        Roi = Mat::ones(size, size, CV_8U);
+        Roi = Mat::ones(size, size, CV_16U);
         break;
     case 2: // Ellipse
-        Roi = Mat::zeros(size, size, CV_8U);
+        Roi = Mat::zeros(size, size, CV_16U);
         ellipse(Roi, Point(size / 2, size / 2),	Size(size / 2, size / 2), 0.0, 0.0, 360.0, 1, -1);
         break;
     case 3: // Hexagon
@@ -44,7 +44,7 @@ cv::Mat CreateStandardROI(int size, int roiShape)
         int edgeLength = size/2;
         int roiMaxX = size;
         int roiMaxY = (int)((double)size * 0.8660254);
-        Roi = Mat::zeros(roiMaxY, roiMaxX, CV_8U);
+        Roi = Mat::zeros(roiMaxY, roiMaxX, CV_16U);
 
         Point vertice0(edgeLength / 2, 0);
         Point vertice1(edgeLength / 2 + edgeLength - 1, 0);
@@ -59,11 +59,11 @@ cv::Mat CreateStandardROI(int size, int roiShape)
         line(Roi, vertice3, vertice4, 1, 1);
         line(Roi, vertice4, vertice5, 1, 1);
         line(Roi, vertice5, vertice0, 1, 1);
-        unsigned char *wRoi;
+        unsigned short *wRoi;
 
         for (int y = 1; y < roiMaxY - 1; y++)
         {
-            wRoi = (unsigned char *)Roi.data + roiMaxX * y;
+            wRoi = (unsigned short *)Roi.data + roiMaxX * y;
             int x = 0;
             for (x; x < roiMaxX; x++)
             {
@@ -225,13 +225,16 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
     ImShowGray(ImIn,params);
     PrepareImShow();
 
+    if(!params.calculateDirectionality)
+        return;
+
     Roi = CreateStandardROI(params.tileWidth, params.tileShape);
-    imshow("Roi", Roi*255);
+    imshow("Roi", Roi*65535);
 
     int stepNr = (int)(180.0 / params.angleStep); // angle step for computations (number of steps)
 
     float *CorrelationAvg = new float[stepNr];
-    int *AnglesAvg = new int[stepNr]; // vector for best angles histogtam
+
     //Matrix declarations
     Mat ImInF, ImToShow, SmallIm, COM, SmallImToShow;
 
@@ -250,17 +253,19 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 
     string OutDataString = ParamsString;
     OutDataString += "FileName \t" + FileToOpen.string();
+    OutDataString += "\n";
     OutDataString += "Tile Y\tTile X\t";
     OutDataString += "Angle \t";
-    OutDataString += "Mean Intensity\tTile min norm\tTile max norm\t";
+    OutDataString += "Tile min norm\tTile max norm\t";
     OutDataString += "\n";
 
-    int maxOffset = params.minOffset + params. offsetCount + params.offsetStep;
+    int maxOffset = params.minOffset + params. offsetCount * params.offsetStep;
 
-    for (int y = params.tileOffsetX; y <= (maxY - params.tileOffsetX); y += params.tileShiftY)
+    for (int y = params.tileOffsetX; y <= (maxY - params.tileOffsetX); y += params.tileShiftX)
     {
         for (int x = params.tileOffsetX; x <= (maxX - params.tileOffsetX); x += params.tileShiftX)
         {
+
             ImInF(Rect(x - Roi.cols / 2, y - Roi.rows / 2, Roi.cols, Roi.rows)).copyTo(SmallIm);
             float maxNorm, minNorm;
             switch (params.normalisation)
@@ -298,22 +303,36 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
                     COM.release();
 
                     if (params.tileShape < 2)
-                        COM = COMCardone5(SmallIm, offset, angle, params.binCount, maxNorm, minNorm);
+                        COM = COMCardone4(SmallIm, offset, angle, params.binCount, maxNorm, minNorm, 0);
                     else
-                        COM = COMCardoneRoi5(SmallIm, Roi, offset, angle, params.binCount, maxNorm, minNorm, 1);
+                        COM = COMCardoneRoi(SmallIm, Roi, offset, angle, params.binCount, maxNorm, minNorm, 0, 1);
 
                     CorrelationAvg[angleIndex] = COMCorrelation(COM);
                 }
             }
             // best angle for avg
             bestAngleCorAvg = FindBestAngleMax(CorrelationAvg, stepNr);
-            ShowDirection(y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
-            waitKey(80);
+            if(params.showDirection)
+            {
+                ShowDirection(y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
+                waitKey(80);
+            }
+            string LocalDataString;
+            LocalDataString += to_string(y) + "\t";
+            LocalDataString += to_string(x) + "\t";
+            LocalDataString += to_string(bestAngleCorAvg) + "\t";
+            LocalDataString += to_string(minNorm) + "\t";
+            LocalDataString += to_string(maxNorm) + "\t";
+            LocalDataString += "n";
+            OutDataString += LocalDataString;
+            if(params.showOutputText)
+                ui->textEditOutput->append(LocalDataString.c_str());
+
         }
     }
     // release memory
     delete[] CorrelationAvg;
-    delete[] AnglesAvg;
+
     ImInF.release();
     ImToShow.release();
     SmallIm.release();
@@ -417,6 +436,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->spinBoxMinOffset->setValue(params.minOffset);
     ui->spinBoxOffsetCount->setValue(params.offsetCount);
     ui->spinBoxOffsetStep->setValue(params.offsetStep);
+
+    ui->CheckBoxShowOutputText->setChecked(params.showOutputText);
+    ui->CheckBoxCalculateDirectionality->setChecked(params.calculateDirectionality);
 
     InputDirectory = params.InFolderName;
     ui->LineEditInDirectory->setText(QString::fromWCharArray(InputDirectory.wstring().c_str()));
@@ -698,4 +720,16 @@ void MainWindow::on_pushButtonSelectOutFolder_clicked()
 
     ui->LineEditOutDirectory->setText(QString::fromWCharArray(OutputDirectory.wstring().c_str()));
     params.OutFolderName1 = OutputDirectory.string();
+}
+
+void MainWindow::on_CheckBoxShowOutputText_toggled(bool checked)
+{
+    params.showOutputText = checked;
+    ImProcess(ImIn,params);
+}
+
+void MainWindow::on_CheckBoxCalculateDirectionality_toggled(bool checked)
+{
+    params.calculateDirectionality = checked;
+    ImProcess(ImIn,params);
 }

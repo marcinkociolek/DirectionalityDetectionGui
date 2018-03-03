@@ -44,7 +44,7 @@ void DirDetectionParams::DefaultParams(void)
     angleStep = 1.0;
 
     minOffset = 8;
-    offsetCount = 6;
+    offsetCount = 4;
     offsetStep = 1;
 
     fixMinNorm;
@@ -59,6 +59,9 @@ void DirDetectionParams::DefaultParams(void)
     showDirection = true;
     directionLineWidth = 2;
     directionLineLength = 23;
+
+    showOutputText = true;
+    calculateDirectionality = false;
 }
 
 std::string DirDetectionParams::ShowParams()
