@@ -352,7 +352,7 @@
      <string>Preprocess Kernel size</string>
     </property>
    </widget>
-   <widget class="QLabel" name="labelTileWidth">
+   <widget class="QLabel" name="labelTileSize">
     <property name="geometry">
      <rect>
       <x>430</x>
@@ -370,28 +370,7 @@
      <bool>true</bool>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tile width&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelTileHeight">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>370</y>
-      <width>172</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="mouseTracking">
-     <bool>true</bool>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tile height&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tile size&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelOffsetY">
@@ -433,29 +412,11 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tile offset x&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="labelShiftY">
+   <widget class="QLabel" name="labelShift">
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>490</y>
-      <width>172</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tile shift y&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelShiftX">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>460</y>
+      <y>370</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -469,7 +430,7 @@
      <bool>true</bool>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tile shift x&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tile shift&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="CheckBoxShowTiles">
@@ -661,29 +622,11 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Direction line lenght&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBoxTileWidth">
+   <widget class="QSpinBox" name="spinBoxTileSize">
     <property name="geometry">
      <rect>
       <x>610</x>
       <y>340</y>
-      <width>70</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="minimum">
-     <number>3</number>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxTileHeight">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>370</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -733,29 +676,11 @@
      <number>2</number>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBoxTileShiftX">
+   <widget class="QSpinBox" name="spinBoxTileShift">
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>460</y>
-      <width>70</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="minimum">
-     <number>1</number>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxTileShiftY">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>490</y>
+      <y>370</y>
       <width>70</width>
       <height>24</height>
      </rect>

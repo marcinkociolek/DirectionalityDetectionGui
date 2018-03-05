@@ -20,14 +20,16 @@ void DirDetectionParams::DefaultParams(void)
 
     showInputGray = false;
     showInputPC = true;
+    showRoi = true;
     showSmallImage = true;
 
     tileShape = 2;
 
-    tileWidth = 61;
-    tileHeight = 61;
-    tileShiftX = 45;
-    tileShiftY = 45;
+    tileSize = 61;
+    //tileWidth = 61;
+    //tileHeight = 61;
+    tileShift = 45;
+    //tileShiftY = 45;
     tileOffsetX = 31;
     tileOffsetY = 31;
 
@@ -139,16 +141,16 @@ std::string DirDetectionParams::ShowParams()
     OutString += "\n";
 
     OutString += "Tile width x:\t";
-    OutString += to_string(tileWidth);
+    OutString += to_string(tileSize);
     OutString += "\n";
 
-    OutString += "Tile shift x:\t";
-    OutString += to_string(tileShiftX);
+    OutString += "Tile shift:\t";
+    OutString += to_string(tileShift);
     OutString += "\n";
 
-    OutString += "Tile shift y:\t";
-    OutString += to_string(tileShiftY);
-    OutString += "\n";
+    //OutString += "Tile shift y:\t";
+    //OutString += to_string(tileShiftY);
+    //OutString += "\n";
 
     OutString += "Tile offset x:\t";
     OutString += to_string(tileOffsetX);

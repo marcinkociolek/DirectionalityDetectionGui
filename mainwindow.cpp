@@ -140,41 +140,57 @@ void DrawTilesOnImage(cv::Mat ImIn, DirDetectionParams params)
 
     if(!maxY || !maxY)
         return;
+
+    int firstTileY = params.tileOffsetY;
+    int lastTileY = maxY - params.tileSize / 2;
+    int firstTileX = params.tileOffsetX;
+    int lastTileX = maxX - params.tileSize / 2;
+
     switch (params.tileShape)
     {
     case 1:
-        for (int y = params.tileOffsetY; y <= (maxY - params.tileOffsetY); y += params.tileShiftY)
+    {
+        int tileLeftTopBorderOffset = params.tileSize / 2 ;
+        int tileRigthBottomBorderOffset =  params.tileSize - params.tileSize / 2 - 1 ;
+        for (int y = firstTileY; y < lastTileY; y += params.tileShift)
         {
-            for (int x = params.tileOffsetX; x <= (maxX - params.tileOffsetX); x += params.tileShiftX)
+            for (int x = firstTileX; x < lastTileX; x += params.tileShift)
             {
-                rectangle(ImIn, Point(x - params.tileWidth / 2, y - params.tileHeight / 2),
-                    Point(x - params.tileWidth / 2 + params.tileWidth - 1, y - params.tileHeight / 2 + params.tileHeight - 1),
+                rectangle(ImIn, Point(x - tileLeftTopBorderOffset, y - tileLeftTopBorderOffset),
+                    Point(x + tileRigthBottomBorderOffset, y + tileRigthBottomBorderOffset),
                     Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
             }
         }
+    }
         break;
     case 2:
-        for (int y = params.tileOffsetY; y <= (maxY - params.tileOffsetY); y += params. tileShiftY)
+    {
+        int tileRadius = params.tileSize / 2 ;
+        for (int y = firstTileY; y < lastTileY; y += params.tileShift)
         {
-            for (int x = params.tileOffsetX; x <= (maxX - params.tileOffsetX); x += params.tileShiftX)
+            for (int x = firstTileX; x < lastTileX; x += params.tileShift)
             {
                 ellipse(ImIn, Point(x, y),
-                    Size(params.tileWidth / 2, params.tileHeight / 2), 0.0, 0.0, 360.0,
+                    Size(tileRadius, tileRadius), 0.0, 0.0, 360.0,
                     Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
             }
         }
+    }
         break;
     case 3:
-        for (int y = params.tileOffsetY; y <= (maxY - params.tileOffsetY); y += params.tileShiftY)
+    {
+        int edgeLength = params.tileSize/2;
+        int octagonHalfHeight = (int)((float)edgeLength * 0.8660254);
+        for (int y = firstTileY; y < lastTileY; y += params.tileShift)
         {
-            for (int x = params.tileOffsetX; x <= (maxX - params.tileOffsetX); x += params.tileShiftX)
+            for (int x = firstTileX; x < lastTileX; x += params.tileShift)
             {
-                int edgeLength = params.tileWidth/2;
-                Point vertice0(x - edgeLength / 2, y - (int)((float)edgeLength * 0.8660254));
-                Point vertice1(x + edgeLength - edgeLength / 2, y - (int)((float)edgeLength * 0.8660254));
+
+                Point vertice0(x - edgeLength / 2, y - octagonHalfHeight);
+                Point vertice1(x + edgeLength - edgeLength / 2, y - octagonHalfHeight);
                 Point vertice2(x + edgeLength, y);
-                Point vertice3(x + edgeLength - edgeLength / 2, y + (int)((float)edgeLength * 0.8660254));
-                Point vertice4(x - edgeLength / 2, y + (int)((float)edgeLength * 0.8660254));
+                Point vertice3(x + edgeLength - edgeLength / 2, y + octagonHalfHeight);
+                Point vertice4(x - edgeLength / 2, y + octagonHalfHeight);
                 Point vertice5(x - edgeLength, y);
 
                 line(ImIn, vertice0, vertice1, Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
@@ -185,6 +201,7 @@ void DrawTilesOnImage(cv::Mat ImIn, DirDetectionParams params)
                 line(ImIn, vertice5, vertice0, Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
             }
         }
+    }
         break;
     default:
         break;
@@ -217,19 +234,37 @@ void ImShowGray(cv::Mat ImIn,  DirDetectionParams params)
     ImToShow.release();
 }
 //-----------------------------------------------------------------------------------------------
+Mat PrepareImShow(cv::Mat ImIn,  DirDetectionParams params)
+{
+    Mat ImToShow = ShowImage16PseudoColor(ImIn, params.displayPCMin, params.displayPCMax);
+    DrawTilesOnImage(ImToShow, params);
+    return ImToShow;
+
+}
+//-----------------------------------------------------------------------------------------------
+void ShowDirection(Mat ImToShow, int y, int x, float direction, int lineWidth, int lineLength)
+{
+    int lineOffsetX = (int)round(lineLength * 0.5 *  sin((double)direction* PI / 180.0));
+    int lineOffsetY = (int)round(lineLength * 0.5 * cos((double)direction* PI / 180.0));
+
+    line(ImToShow, Point(x - lineOffsetX, y - lineOffsetY), Point(x + lineOffsetX, y + lineOffsetY), Scalar(0, 0.0, 0.0, 0.0), lineWidth);
+
+    imshow("ImOut", ImToShow);
+}
+//-----------------------------------------------------------------------------------------------
 void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 {
     if(stopProcess)
         return;
     ImShowPC(ImIn,params);
     ImShowGray(ImIn,params);
-    PrepareImShow();
+
+    Mat Roi = CreateStandardROI(params.tileSize, params.tileShape);
+    if(params.showRoi)
+        imshow("Roi", Roi*65535);
 
     if(!params.calculateDirectionality)
         return;
-
-    Roi = CreateStandardROI(params.tileWidth, params.tileShape);
-    imshow("Roi", Roi*65535);
 
     int stepNr = (int)(180.0 / params.angleStep); // angle step for computations (number of steps)
 
@@ -237,6 +272,8 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 
     //Matrix declarations
     Mat ImInF, ImToShow, SmallIm, COM, SmallImToShow;
+
+    ImToShow = PrepareImShow(ImIn,params);
 
     ImIn.convertTo(ImInF, CV_32F);
 
@@ -261,12 +298,21 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 
     int maxOffset = params.minOffset + params. offsetCount * params.offsetStep;
 
-    for (int y = params.tileOffsetX; y <= (maxY - params.tileOffsetX); y += params.tileShiftX)
+    int firstTileY = params.tileOffsetY;
+    int lastTileY = maxY - params.tileSize / 2;
+    int firstTileX = params.tileOffsetX;
+    int lastTileX = maxX - params.tileSize / 2;
+    for (int y = firstTileY; y <= lastTileY; y += params.tileShift)
     {
-        for (int x = params.tileOffsetX; x <= (maxX - params.tileOffsetX); x += params.tileShiftX)
+        for (int x = firstTileX; x <= lastTileX; x += params.tileShift)
         {
 
             ImInF(Rect(x - Roi.cols / 2, y - Roi.rows / 2, Roi.cols, Roi.rows)).copyTo(SmallIm);
+            if(1)
+            {
+                imshow("Small Image", ShowImageF32PseudoColor(SmallIm, 0, params.displayPCMax));
+            }
+
             float maxNorm, minNorm;
             switch (params.normalisation)
             {
@@ -307,14 +353,14 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
                     else
                         COM = COMCardoneRoi(SmallIm, Roi, offset, angle, params.binCount, maxNorm, minNorm, 0, 1);
 
-                    CorrelationAvg[angleIndex] = COMCorrelation(COM);
+                    CorrelationAvg[angleIndex] += COMCorrelation(COM);
                 }
             }
             // best angle for avg
             bestAngleCorAvg = FindBestAngleMax(CorrelationAvg, stepNr);
             if(params.showDirection)
             {
-                ShowDirection(y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
+                ShowDirection(ImToShow, y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
                 waitKey(80);
             }
             string LocalDataString;
@@ -365,6 +411,7 @@ void MainWindow::ReloadFileList()
     }
 }
 //-----------------------------------------------------------------------------------------------
+/*
 void MainWindow::PrepareImShow()
 {
     ImToShow = ShowImage16PseudoColor(ImIn, params.displayPCMin, params.displayPCMax);
@@ -372,7 +419,9 @@ void MainWindow::PrepareImShow()
     imshow("ImOut", ImToShow);
 
 }
+*/
 //-----------------------------------------------------------------------------------------------
+/*
 void MainWindow::ShowDirection(int y, int x, float direction, int lineWidth, int lineLength)
 {
     int lineOffsetX = (int)round(lineLength * 0.5 *  sin((double)direction* PI / 180.0));
@@ -382,6 +431,7 @@ void MainWindow::ShowDirection(int y, int x, float direction, int lineWidth, int
 
     imshow("ImOut", ImToShow);
 }
+*/
 //-----------------------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------------------
@@ -420,12 +470,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBoxPreprocessType->setCurrentIndex(params.preprocessType);
     ui->spinBoxPreprocessKernelSize->setValue(params.preprocessKernelSize);
     ui->comboBoxTileShape->setCurrentIndex(params.tileShape - 1);
-    ui->spinBoxTileWidth->setValue(params.tileWidth);
-    ui->spinBoxTileHeight->setValue(params.tileHeight);
+    ui->spinBoxTileSize->setValue(params.tileSize);
     ui->spinBoxTileOffsetX->setValue(params.tileOffsetX);
     ui->spinBoxTileOffsetY->setValue(params.tileOffsetY);
-    ui->spinBoxTileShiftX->setValue(params.tileShiftX);
-    ui->spinBoxTileShiftY->setValue(params.tileShiftY);
+    ui->spinBoxTileShift->setValue(params.tileShift);
     ui->CheckBoxShowTiles->setChecked(params.showTiles);
     ui->spinBoxTileLineWidth->setValue(params.tileLineWidth);
     ui->CheckBoxShowDirection->setChecked(params.showDirection);
@@ -554,39 +602,35 @@ void MainWindow::on_comboBoxTileShape_currentIndexChanged(int index)
     ImProcess(ImIn,params);
 }
 
-void MainWindow::on_spinBoxTileWidth_valueChanged(int arg1)
+void MainWindow::on_spinBoxTileSize_valueChanged(int arg1)
 {
-    params.tileWidth = arg1;
-    if(params.tileOffsetX < params.tileWidth/2)
+    params.tileSize = arg1;
+    if(params.tileOffsetX < params.tileSize/2)
     {
         stopProcess = true;
-        params.tileOffsetX = params.tileWidth/2;
+        params.tileOffsetX = params.tileSize/2;
         ui->spinBoxTileOffsetX->setValue(params.tileOffsetX);
         stopProcess = false;
     }
-    ImProcess(ImIn,params);
-}
-
-void MainWindow::on_spinBoxTileHeight_valueChanged(int arg1)
-{
-    params.tileHeight = arg1;
-    if(params.tileOffsetY < params.tileHeight/2)
+    if(params.tileOffsetY < params.tileSize/2)
     {
         stopProcess = true;
-        params.tileOffsetY = params.tileHeight/2;
+        params.tileOffsetY = params.tileSize/2;
         ui->spinBoxTileOffsetY->setValue(params.tileOffsetY);
         stopProcess = false;
     }
+
+
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxTileOffsetX_valueChanged(int arg1)
 {
-    if(arg1 > params.tileWidth/2)
+    if(arg1 > params.tileSize/2)
         params.tileOffsetX = arg1;
     else
     {
-        params.tileOffsetX = params.tileWidth/2;
+        params.tileOffsetX = params.tileSize/2;
         ui->spinBoxTileOffsetX->setValue(params.tileOffsetX);
     }
     ImProcess(ImIn,params);
@@ -594,25 +638,19 @@ void MainWindow::on_spinBoxTileOffsetX_valueChanged(int arg1)
 
 void MainWindow::on_spinBoxTileOffsetY_valueChanged(int arg1)
 {
-    if(arg1 > params.tileHeight/2)
+    if(arg1 > params.tileSize/2)
         params.tileOffsetY = arg1;
     else
     {
-        params.tileOffsetY = params.tileHeight/2;
+        params.tileOffsetY = params.tileSize/2;
         ui->spinBoxTileOffsetY->setValue(params.tileOffsetY);
     }
     ImProcess(ImIn,params);
 }
 
-void MainWindow::on_spinBoxTileShiftX_valueChanged(int arg1)
+void MainWindow::on_spinBoxTileShift_valueChanged(int arg1)
 {
-    params.tileShiftX = arg1;
-    ImProcess(ImIn,params);
-}
-
-void MainWindow::on_spinBoxTileShiftY_valueChanged(int arg1)
-{
-    params.tileShiftY = arg1;
+    params.tileShift = arg1;
     ImProcess(ImIn,params);
 }
 

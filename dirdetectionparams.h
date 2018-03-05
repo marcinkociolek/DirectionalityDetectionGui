@@ -19,14 +19,15 @@ public:
 
     bool showInputGray;
     bool showInputPC;
+    bool showRoi;
     bool showSmallImage;
 
     int tileShape;
 
-    int tileWidth;
-    int tileHeight;
-    int tileShiftX;
-    int tileShiftY;
+    int tileSize;
+    //int tileHeight;
+    int tileShift;
+    //int tileShiftY;
     int tileOffsetX;
     int tileOffsetY;
 

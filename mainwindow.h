@@ -22,9 +22,9 @@ public:
     bool stopProcess;
 
     cv::Mat ImIn;
-    cv::Mat Roi;
-    cv::Mat SmallIm;
-    cv::Mat ImToShow;
+    //cv::Mat Roi;
+    //cv::Mat SmallIm;
+    //cv::Mat ImToShow;
     //std::string CurrentFileName;
     boost::filesystem::path FileToOpen;
     boost::filesystem::path CurrentDir;
@@ -38,8 +38,8 @@ public:
     //-----------------------------------------------------------------------------------------------
 
     void MainWindow::ReloadFileList();
-    void MainWindow::PrepareImShow();
-    void MainWindow::ShowDirection(int y, int x, float direction, int lineWidth, int lineLength);
+    //void MainWindow::PrepareImShow();
+    //void MainWindow::ShowDirection(int y, int x, float direction, int lineWidth, int lineLength);
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -67,17 +67,13 @@ private slots:
 
     void on_comboBoxTileShape_currentIndexChanged(int index);
 
-    void on_spinBoxTileWidth_valueChanged(int arg1);
-
-    void on_spinBoxTileHeight_valueChanged(int arg1);
+    void on_spinBoxTileSize_valueChanged(int arg1);
 
     void on_spinBoxTileOffsetX_valueChanged(int arg1);
 
     void on_spinBoxTileOffsetY_valueChanged(int arg1);
 
-    void on_spinBoxTileShiftX_valueChanged(int arg1);
-
-    void on_spinBoxTileShiftY_valueChanged(int arg1);
+    void on_spinBoxTileShift_valueChanged(int arg1);
 
     void on_CheckBoxShowTiles_toggled(bool checked);
 
