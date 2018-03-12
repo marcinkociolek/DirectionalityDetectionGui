@@ -13,6 +13,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <math.h>
+#include <iostream>
+#include <fstream>
 
 #include "DispLib.h"
 #include "NormalizationLib.h"
@@ -251,20 +253,16 @@ void ShowDirection(Mat ImToShow, int y, int x, float direction, int lineWidth, i
 
     imshow("ImOut", ImToShow);
 }
-//-----------------------------------------------------------------------------------------------
-void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
-{
-    if(stopProcess)
-        return;
-    ImShowPC(ImIn,params);
-    ImShowGray(ImIn,params);
 
+
+//-----------------------------------------------------------------------------------------------
+string DirEstimation(cv::Mat ImIn,  DirDetectionParams params)
+{
     Mat Roi = CreateStandardROI(params.tileSize, params.tileShape);
     if(params.showRoi)
         imshow("Roi", Roi*65535);
-
-    if(!params.calculateDirectionality)
-        return;
+    if(ImIn.empty())
+        return "Error 1 Empty Image";
 
     int stepNr = (int)(180.0 / params.angleStep); // angle step for computations (number of steps)
 
@@ -273,7 +271,8 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
     //Matrix declarations
     Mat ImInF, ImToShow, SmallIm, COM, SmallImToShow;
 
-    ImToShow = PrepareImShow(ImIn,params);
+    if(params.showDirection)
+        ImToShow = PrepareImShow(ImIn,params);
 
     ImIn.convertTo(ImInF, CV_32F);
 
@@ -285,11 +284,8 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 
     GlobalNormalisation(ImInF, params.normalisation , &maxNormGlobal, &minNormGlobal);
 
-    ParamsString.empty();
-    ParamsString = params.ShowParams();
-
-    string OutDataString = ParamsString;
-    OutDataString += "FileName \t" + FileToOpen.string();
+    string OutDataString = params.ShowParams();
+    OutDataString += "FileName \t" + params.FileName;
     OutDataString += "\n";
     OutDataString += "Tile Y\tTile X\t";
     OutDataString += "Angle \t";
@@ -361,7 +357,7 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
             if(params.showDirection)
             {
                 ShowDirection(ImToShow, y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
-                waitKey(80);
+                waitKey(10);
             }
             string LocalDataString;
             LocalDataString += to_string(y) + "\t";
@@ -369,21 +365,60 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
             LocalDataString += to_string(bestAngleCorAvg) + "\t";
             LocalDataString += to_string(minNorm) + "\t";
             LocalDataString += to_string(maxNorm) + "\t";
-            LocalDataString += "n";
+            //LocalDataString += "n";
             OutDataString += LocalDataString;
-            if(params.showOutputText)
-                ui->textEditOutput->append(LocalDataString.c_str());
-
+            OutDataString += "\n";
         }
     }
+
     // release memory
     delete[] CorrelationAvg;
-
+    CorrelationAvg = 0;
     ImInF.release();
     ImToShow.release();
     SmallIm.release();
     COM.release();
     SmallImToShow.release();
+
+    if(params.textOut)
+    {
+        path outDir(params.OutFolderName1);
+        if (!exists(outDir))
+        {
+            OutDataString = "Error 1" + outDir.string() + " does not exists";
+            return OutDataString;
+        }
+        if (!is_directory(outDir))
+        {
+            OutDataString = "Error 2" + outDir.string() + " is not a directory";
+            return OutDataString;
+        }
+
+        path textOutFile = outDir;
+        textOutFile.append(params.FileName + ".txt");
+
+        std::ofstream out (textOutFile.string());
+        out << OutDataString;
+        out.close();
+    }
+
+    return OutDataString;
+}
+//-----------------------------------------------------------------------------------------------
+
+
+void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
+{
+    if(stopProcess)
+        return;
+    ImShowPC(ImIn,params);
+    ImShowGray(ImIn,params);
+    if(!params.calculateDirectionality)
+        return;
+    params.FileName = FileToOpen.stem().string();
+
+    string OutStr = DirEstimation(ImIn, params);
+    ui->textEditOutput->setText(OutStr.c_str());
 }
 //-----------------------------------------------------------------------------------------------
 void MainWindow::ReloadFileList()
@@ -491,6 +526,9 @@ MainWindow::MainWindow(QWidget *parent) :
     InputDirectory = params.InFolderName;
     ui->LineEditInDirectory->setText(QString::fromWCharArray(InputDirectory.wstring().c_str()));
     ui->LineEditFilePattern->setText(params.InFilePattern.c_str());
+
+    ImTemp = Mat::ones(100,100,0)*200;
+
     stopProcess = false;
 }
 
@@ -501,13 +539,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButtonSelectInFolder_clicked()
 {
+
     QFileDialog dialog(this, "Open Folder");
     dialog.setFileMode(QFileDialog::Directory);
     dialog.setDirectory(InputDirectory.string().c_str());
 
     if(dialog.exec())
     {
+
         InputDirectory = dialog.directory().path().toStdWString();
+
+
     }
     else
          return;
@@ -515,6 +557,8 @@ void MainWindow::on_pushButtonSelectInFolder_clicked()
     //InputDirectory = dialog.getExistingDirectory().toStdWString();//  toStdString());
     if (!exists(InputDirectory))
     {
+
+
         QMessageBox msgBox;
         msgBox.setText((InputDirectory.string()+ " not exists ").c_str());
         msgBox.exec();
@@ -530,7 +574,9 @@ void MainWindow::on_pushButtonSelectInFolder_clicked()
 
     ui->LineEditInDirectory->setText(QString::fromWCharArray(InputDirectory.wstring().c_str()));
     params.InFolderName = InputDirectory.string();
+
     ReloadFileList();
+
 }
 
 void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentText)
@@ -730,7 +776,8 @@ void MainWindow::on_LineEditFilePattern_returnPressed()
 void MainWindow::on_pushButtonSelectOutFolder_clicked()
 {
     QFileDialog dialog(this, "Open Folder");
-    dialog.setFileMode(QFileDialog::Directory);
+
+   dialog.setFileMode(QFileDialog::Directory);
     //dialog.setDirectory(InputDirectory.string().c_str());
 
     if(dialog.exec())
@@ -758,6 +805,8 @@ void MainWindow::on_pushButtonSelectOutFolder_clicked()
 
     ui->LineEditOutDirectory->setText(QString::fromWCharArray(OutputDirectory.wstring().c_str()));
     params.OutFolderName1 = OutputDirectory.string();
+
+
 }
 
 void MainWindow::on_CheckBoxShowOutputText_toggled(bool checked)

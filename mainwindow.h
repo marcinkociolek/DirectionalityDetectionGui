@@ -22,6 +22,7 @@ public:
     bool stopProcess;
 
     cv::Mat ImIn;
+    cv::Mat ImTemp;
     //cv::Mat Roi;
     //cv::Mat SmallIm;
     //cv::Mat ImToShow;

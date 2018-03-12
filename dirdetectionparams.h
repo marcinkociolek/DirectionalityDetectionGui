@@ -14,6 +14,8 @@ public:
     std::string OutFolderName1;
     std::string OutFolderName2;
 
+    std::string FileName; //this is only for passing the finamame to the procedude not to store in xmlfile
+
     int preprocessType;
     int preprocessKernelSize;
 
