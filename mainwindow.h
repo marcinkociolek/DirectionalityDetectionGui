@@ -106,6 +106,11 @@ private slots:
 
     void on_CheckBoxCalculateDirectionality_toggled(bool checked);
 
+
+
+
+    void on_CheckBoxShowOutputTile_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
 };

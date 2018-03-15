@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1288</width>
-    <height>676</height>
+    <width>979</width>
+    <height>762</height>
    </rect>
   </property>
   <property name="font">
@@ -101,7 +101,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>100</y>
+      <y>160</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -144,7 +144,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>130</y>
+      <y>100</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -171,9 +171,9 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>160</y>
+      <y>130</y>
       <width>172</width>
-      <height>30</height>
+      <height>24</height>
      </rect>
     </property>
     <property name="font">
@@ -207,7 +207,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>130</y>
+      <y>100</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -255,7 +255,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>160</y>
+      <y>130</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -436,8 +436,8 @@
    <widget class="QCheckBox" name="CheckBoxShowTiles">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>70</y>
+      <x>430</x>
+      <y>460</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -452,8 +452,8 @@
    <widget class="QLabel" name="labelTileLineWidth">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>100</y>
+      <x>430</x>
+      <y>490</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -474,13 +474,13 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>130</y>
+      <y>260</y>
       <width>181</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Show Direction</string>
+     <string>Show Output Image</string>
     </property>
     <property name="checked">
      <bool>true</bool>
@@ -490,7 +490,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>160</y>
+      <y>320</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -511,7 +511,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>290</y>
+      <y>130</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -532,7 +532,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>320</y>
+      <y>160</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -553,7 +553,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>350</y>
+      <y>190</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -574,7 +574,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>220</y>
+      <y>70</y>
       <width>251</width>
       <height>24</height>
      </rect>
@@ -584,7 +584,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>260</y>
+      <y>100</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -605,7 +605,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>190</y>
+      <y>350</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -697,6 +697,69 @@
    <widget class="QSpinBox" name="spinBoxTileLineWidth">
     <property name="geometry">
      <rect>
+      <x>610</x>
+      <y>490</y>
+      <width>70</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>4</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBoxDirectionLineWidth">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>320</y>
+      <width>70</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>4</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBoxDirectionLineLenght">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>350</y>
+      <width>70</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="minimum">
+     <number>4</number>
+    </property>
+    <property name="maximum">
+     <number>40</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBoxBinCount">
+    <property name="geometry">
+     <rect>
       <x>890</x>
       <y>100</y>
       <width>70</width>
@@ -708,57 +771,24 @@
       <pointsize>11</pointsize>
      </font>
     </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxDirectionLineWidth">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>160</y>
-      <width>70</width>
-      <height>24</height>
-     </rect>
+    <property name="minimum">
+     <number>4</number>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
+    <property name="maximum">
+     <number>256</number>
     </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxDirectionLineLenght">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>190</y>
-      <width>70</width>
-      <height>24</height>
-     </rect>
+    <property name="value">
+     <number>4</number>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBoxBinCount">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>260</y>
-      <width>70</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
+    <property name="displayIntegerBase">
+     <number>10</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="spinBoxMinOffset">
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>290</y>
+      <y>130</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -773,7 +803,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>320</y>
+      <y>160</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -788,7 +818,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>350</y>
+      <y>190</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -803,7 +833,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>380</y>
+      <y>220</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -824,7 +854,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>380</y>
+      <y>220</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -884,13 +914,13 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>430</y>
+      <y>380</y>
       <width>181</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Show Output</string>
+     <string>Show Output Text</string>
     </property>
     <property name="checked">
      <bool>true</bool>
@@ -900,7 +930,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>450</y>
+      <y>290</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -916,8 +946,8 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>480</y>
-      <width>831</width>
+      <y>530</y>
+      <width>541</width>
       <height>151</height>
      </rect>
     </property>
@@ -928,7 +958,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1288</width>
+     <width>979</width>
      <height>21</height>
     </rect>
    </property>

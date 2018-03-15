@@ -253,7 +253,19 @@ void ShowDirection(Mat ImToShow, int y, int x, float direction, int lineWidth, i
 
     imshow("ImOut", ImToShow);
 }
+//-----------------------------------------------------------------------------------------------
+void ShowDirectionSmall(Mat ImIn, int y, int x, float direction, DirDetectionParams params, float lineWidth, int lineLength)
+{
+   /*
+    Mat ImToShow = ShowImage16PseudoColor(ImIn, params.displayPCMin, params.displayPCMax);
+    int lineOffsetX = (int)round(lineLength * 0.5 *  sin((double)direction* PI / 180.0));
+    int lineOffsetY = (int)round(lineLength * 0.5 * cos((double)direction* PI / 180.0));
 
+    line(ImToShow, Point(x - lineOffsetX, y - lineOffsetY), Point(x + lineOffsetX, y + lineOffsetY), Scalar(0, 0.0, 0.0, 0.0), lineWidth);
+
+    imshow("ImSmall", ImToShow);
+    */
+}
 
 //-----------------------------------------------------------------------------------------------
 string DirEstimation(cv::Mat ImIn,  DirDetectionParams params)
@@ -304,11 +316,6 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params)
         {
 
             ImInF(Rect(x - Roi.cols / 2, y - Roi.rows / 2, Roi.cols, Roi.rows)).copyTo(SmallIm);
-            if(1)
-            {
-                imshow("Small Image", ShowImageF32PseudoColor(SmallIm, 0, params.displayPCMax));
-            }
-
             float maxNorm, minNorm;
             switch (params.normalisation)
             {
@@ -357,8 +364,15 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params)
             if(params.showDirection)
             {
                 ShowDirection(ImToShow, y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
-                waitKey(10);
             }
+            if(params.showSmallImage)
+            {
+                //ShowDirectionSmall(SmallIm, params.tileOffsetY, params.tileOffsetX, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
+                imshow("Small Image", ShowImageF32PseudoColor(SmallIm, minNorm, maxNorm));
+            }
+            if(params.showSmallImage || params.showSmallImage)
+                waitKey(10);
+
             string LocalDataString;
             LocalDataString += to_string(y) + "\t";
             LocalDataString += to_string(x) + "\t";
@@ -419,6 +433,7 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
 
     string OutStr = DirEstimation(ImIn, params);
     ui->textEditOutput->setText(OutStr.c_str());
+
 }
 //-----------------------------------------------------------------------------------------------
 void MainWindow::ReloadFileList()
@@ -488,11 +503,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBoxTileShape->addItem("Tile shape circle");
     ui->comboBoxTileShape->addItem("Tile shape hexagon");
 
-    ui->comboBoxNormalisation->addItem("Normalisation none");
-    ui->comboBoxNormalisation->addItem("Normalisation tile min-max");
-    ui->comboBoxNormalisation->addItem("Normalisation global min-max");
-    ui->comboBoxNormalisation->addItem("Normalisation tile +/- 3 sigma");
-    ui->comboBoxNormalisation->addItem("Normalisation global +/- 3 sigma");
+    ui->comboBoxNormalisation->addItem("Normalization none");
+    ui->comboBoxNormalisation->addItem("Normalization tile min-max");
+    ui->comboBoxNormalisation->addItem("Normalization global min-max");
+    ui->comboBoxNormalisation->addItem("Normalization tile +/- 3 sigma");
+    ui->comboBoxNormalisation->addItem("Normalization global +/- 3 sigma");
+    ui->comboBoxNormalisation->addItem("Normalization tile 1%-99%");
+    ui->comboBoxNormalisation->addItem("Normalization global 1%-99%");
 
     params.DefaultParams();
 
@@ -589,6 +606,7 @@ void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentTex
     ImIn = imread(FileToOpen.string().c_str(),CV_LOAD_IMAGE_ANYDEPTH);
     if(ImIn.empty())
         return;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 
 
@@ -597,54 +615,63 @@ void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentTex
 void MainWindow::on_CheckBoxShowInputImageGray_toggled(bool checked)
 {
     params.showInputGray = checked;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_CheckBoxShowInputImagePC_toggled(bool checked)
 {
     params.showInputPC = checked;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMinShowGray_valueChanged(int arg1)
 {
     params.displayGrayMin = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMaxShowGray_valueChanged(int arg1)
 {
     params.displayGrayMax = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMinShowPseudoColor_valueChanged(int arg1)
 {
     params.displayPCMin = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMaxShowPseudoColor_valueChanged(int arg1)
 {
     params.displayPCMax = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_comboBoxPreprocessType_currentIndexChanged(int index)
 {
     params.preprocessType = index;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxPreprocessKernelSize_valueChanged(int arg1)
 {
     params.preprocessKernelSize = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_comboBoxTileShape_currentIndexChanged(int index)
 {
     params.tileShape = index + 1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
@@ -665,7 +692,7 @@ void MainWindow::on_spinBoxTileSize_valueChanged(int arg1)
         ui->spinBoxTileOffsetY->setValue(params.tileOffsetY);
         stopProcess = false;
     }
-
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
 
     ImProcess(ImIn,params);
 }
@@ -679,6 +706,7 @@ void MainWindow::on_spinBoxTileOffsetX_valueChanged(int arg1)
         params.tileOffsetX = params.tileSize/2;
         ui->spinBoxTileOffsetX->setValue(params.tileOffsetX);
     }
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
@@ -691,18 +719,21 @@ void MainWindow::on_spinBoxTileOffsetY_valueChanged(int arg1)
         params.tileOffsetY = params.tileSize/2;
         ui->spinBoxTileOffsetY->setValue(params.tileOffsetY);
     }
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxTileShift_valueChanged(int arg1)
 {
     params.tileShift = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_CheckBoxShowTiles_toggled(bool checked)
 {
     params.showTiles = checked;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
@@ -715,60 +746,70 @@ void MainWindow::on_spinBoxTileLineWidth_valueChanged(int arg1)
 void MainWindow::on_CheckBoxShowDirection_toggled(bool checked)
 {
     params.showDirection = checked;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxDirectionLineWidth_valueChanged(int arg1)
 {
     params.directionLineWidth = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxDirectionLineLenght_valueChanged(int arg1)
 {
     params.directionLineLength = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_comboBoxNormalisation_currentIndexChanged(int index)
 {
     params.normalisation = index;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxBinCount_valueChanged(int arg1)
 {
     params.binCount = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMinOffset_valueChanged(int arg1)
 {
     params.minOffset = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxOffsetCount_valueChanged(int arg1)
 {
     params.offsetCount = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxOffsetStep_valueChanged(int arg1)
 {
     params.offsetStep = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_doubleSpinBoxAngleStep_valueChanged(double arg1)
 {
     params.angleStep = arg1;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_LineEditFilePattern_returnPressed()
 {
     params.InFilePattern = ui->LineEditFilePattern->text().toStdString();
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ReloadFileList();
     ImProcess(ImIn,params);
 }
@@ -777,8 +818,8 @@ void MainWindow::on_pushButtonSelectOutFolder_clicked()
 {
     QFileDialog dialog(this, "Open Folder");
 
-   dialog.setFileMode(QFileDialog::Directory);
-    //dialog.setDirectory(InputDirectory.string().c_str());
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setDirectory(OutputDirectory.string().c_str());
 
     if(dialog.exec())
     {
@@ -812,11 +853,22 @@ void MainWindow::on_pushButtonSelectOutFolder_clicked()
 void MainWindow::on_CheckBoxShowOutputText_toggled(bool checked)
 {
     params.showOutputText = checked;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_CheckBoxCalculateDirectionality_toggled(bool checked)
 {
     params.calculateDirectionality = checked;
+    if(checked)
+        ImProcess(ImIn,params);
+}
+
+
+
+void MainWindow::on_CheckBoxShowOutputTile_toggled(bool checked)
+{
+    params.showSmallImage = checked;
+    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
