@@ -15,6 +15,7 @@
 #include <math.h>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 #include "DispLib.h"
 #include "NormalizationLib.h"
@@ -111,16 +112,18 @@ void GlobalNormalisation(cv::Mat ImF, int normalisation, float *maxNormGlobal, f
 {
     switch (normalisation)
     {
-    case 1:
+    case 2:
         NormParamsMinMax(ImF, maxNormGlobal, minNormGlobal);
         break;
-    case 3:
+    case 4:
         NormParamsMeanP3Std(ImF, maxNormGlobal, minNormGlobal);
         break;
-    case 5:
+    case 6:
         NormParams1to99perc(ImF, maxNormGlobal, minNormGlobal);
         break;
     default:
+        *minNormGlobal = 0.0;
+        *maxNormGlobal = 65535.0;
         break;
     }
 }
@@ -254,17 +257,16 @@ void ShowDirection(Mat ImToShow, int y, int x, float direction, int lineWidth, i
     imshow("ImOut", ImToShow);
 }
 //-----------------------------------------------------------------------------------------------
-void ShowDirectionSmall(Mat ImIn, int y, int x, float direction, DirDetectionParams params, float lineWidth, int lineLength)
+void ShowDirectionSmall(Mat ImIn, float direction, DirDetectionParams params, float minNorm, float maxNorm)
 {
-   /*
-    Mat ImToShow = ShowImage16PseudoColor(ImIn, params.displayPCMin, params.displayPCMax);
-    int lineOffsetX = (int)round(lineLength * 0.5 *  sin((double)direction* PI / 180.0));
-    int lineOffsetY = (int)round(lineLength * 0.5 * cos((double)direction* PI / 180.0));
+    Mat ImToShow = ShowImageF32PseudoColor(ImIn, minNorm, maxNorm);
+    int lineOffsetX = (int)round(params.directionLineLength * 0.5 *  sin((double)direction* PI / 180.0));
+    int lineOffsetY = (int)round(params.directionLineLength * 0.5 * cos((double)direction* PI / 180.0));
 
-    line(ImToShow, Point(x - lineOffsetX, y - lineOffsetY), Point(x + lineOffsetX, y + lineOffsetY), Scalar(0, 0.0, 0.0, 0.0), lineWidth);
+    line(ImToShow, Point(params.tileOffsetX - lineOffsetX, params.tileOffsetY - lineOffsetY), Point(params.tileOffsetX + lineOffsetX, params.tileOffsetY + lineOffsetY), Scalar(0, 0.0, 0.0, 0.0), params.directionLineWidth);
 
     imshow("ImSmall", ImToShow);
-    */
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -367,8 +369,9 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params)
             }
             if(params.showSmallImage)
             {
+                ShowDirectionSmall(SmallIm, bestAngleCorAvg*params.angleStep, params, minNorm, maxNorm);
                 //ShowDirectionSmall(SmallIm, params.tileOffsetY, params.tileOffsetX, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
-                imshow("Small Image", ShowImageF32PseudoColor(SmallIm, minNorm, maxNorm));
+                //imshow("Small Image", ShowImageF32PseudoColor(SmallIm, minNorm, maxNorm));
             }
             if(params.showSmallImage || params.showSmallImage)
                 waitKey(10);
@@ -429,10 +432,7 @@ void MainWindow::ImProcess(cv::Mat ImIn,  DirDetectionParams params)
     ImShowGray(ImIn,params);
     if(!params.calculateDirectionality)
         return;
-    params.FileName = FileToOpen.stem().string();
 
-    string OutStr = DirEstimation(ImIn, params);
-    ui->textEditOutput->setText(OutStr.c_str());
 
 }
 //-----------------------------------------------------------------------------------------------
@@ -538,7 +538,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->spinBoxOffsetStep->setValue(params.offsetStep);
 
     ui->CheckBoxShowOutputText->setChecked(params.showOutputText);
-    ui->CheckBoxCalculateDirectionality->setChecked(params.calculateDirectionality);
 
     InputDirectory = params.InFolderName;
     ui->LineEditInDirectory->setText(QString::fromWCharArray(InputDirectory.wstring().c_str()));
@@ -563,19 +562,13 @@ void MainWindow::on_pushButtonSelectInFolder_clicked()
 
     if(dialog.exec())
     {
-
         InputDirectory = dialog.directory().path().toStdWString();
-
-
     }
     else
          return;
 
-    //InputDirectory = dialog.getExistingDirectory().toStdWString();//  toStdString());
     if (!exists(InputDirectory))
     {
-
-
         QMessageBox msgBox;
         msgBox.setText((InputDirectory.string()+ " not exists ").c_str());
         msgBox.exec();
@@ -593,7 +586,6 @@ void MainWindow::on_pushButtonSelectInFolder_clicked()
     params.InFolderName = InputDirectory.string();
 
     ReloadFileList();
-
 }
 
 void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentText)
@@ -606,7 +598,6 @@ void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentTex
     ImIn = imread(FileToOpen.string().c_str(),CV_LOAD_IMAGE_ANYDEPTH);
     if(ImIn.empty())
         return;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 
 
@@ -615,63 +606,54 @@ void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentTex
 void MainWindow::on_CheckBoxShowInputImageGray_toggled(bool checked)
 {
     params.showInputGray = checked;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_CheckBoxShowInputImagePC_toggled(bool checked)
 {
     params.showInputPC = checked;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMinShowGray_valueChanged(int arg1)
 {
     params.displayGrayMin = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMaxShowGray_valueChanged(int arg1)
 {
     params.displayGrayMax = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMinShowPseudoColor_valueChanged(int arg1)
 {
     params.displayPCMin = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMaxShowPseudoColor_valueChanged(int arg1)
 {
     params.displayPCMax = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_comboBoxPreprocessType_currentIndexChanged(int index)
 {
     params.preprocessType = index;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxPreprocessKernelSize_valueChanged(int arg1)
 {
     params.preprocessKernelSize = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_comboBoxTileShape_currentIndexChanged(int index)
 {
     params.tileShape = index + 1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
@@ -692,8 +674,6 @@ void MainWindow::on_spinBoxTileSize_valueChanged(int arg1)
         ui->spinBoxTileOffsetY->setValue(params.tileOffsetY);
         stopProcess = false;
     }
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
-
     ImProcess(ImIn,params);
 }
 
@@ -706,7 +686,6 @@ void MainWindow::on_spinBoxTileOffsetX_valueChanged(int arg1)
         params.tileOffsetX = params.tileSize/2;
         ui->spinBoxTileOffsetX->setValue(params.tileOffsetX);
     }
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
@@ -719,21 +698,18 @@ void MainWindow::on_spinBoxTileOffsetY_valueChanged(int arg1)
         params.tileOffsetY = params.tileSize/2;
         ui->spinBoxTileOffsetY->setValue(params.tileOffsetY);
     }
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxTileShift_valueChanged(int arg1)
 {
     params.tileShift = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_CheckBoxShowTiles_toggled(bool checked)
 {
     params.showTiles = checked;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
@@ -746,70 +722,60 @@ void MainWindow::on_spinBoxTileLineWidth_valueChanged(int arg1)
 void MainWindow::on_CheckBoxShowDirection_toggled(bool checked)
 {
     params.showDirection = checked;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxDirectionLineWidth_valueChanged(int arg1)
 {
     params.directionLineWidth = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxDirectionLineLenght_valueChanged(int arg1)
 {
     params.directionLineLength = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_comboBoxNormalisation_currentIndexChanged(int index)
 {
     params.normalisation = index;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxBinCount_valueChanged(int arg1)
 {
     params.binCount = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxMinOffset_valueChanged(int arg1)
 {
     params.minOffset = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxOffsetCount_valueChanged(int arg1)
 {
     params.offsetCount = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_spinBoxOffsetStep_valueChanged(int arg1)
 {
     params.offsetStep = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_doubleSpinBoxAngleStep_valueChanged(double arg1)
 {
     params.angleStep = arg1;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
 
 void MainWindow::on_LineEditFilePattern_returnPressed()
 {
     params.InFilePattern = ui->LineEditFilePattern->text().toStdString();
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ReloadFileList();
     ImProcess(ImIn,params);
 }
@@ -843,32 +809,56 @@ void MainWindow::on_pushButtonSelectOutFolder_clicked()
         msgBox.exec();
         OutputDirectory = "c:\\";
     }
-
     ui->LineEditOutDirectory->setText(QString::fromWCharArray(OutputDirectory.wstring().c_str()));
     params.OutFolderName1 = OutputDirectory.string();
-
-
 }
 
 void MainWindow::on_CheckBoxShowOutputText_toggled(bool checked)
 {
     params.showOutputText = checked;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
 }
-
-void MainWindow::on_CheckBoxCalculateDirectionality_toggled(bool checked)
-{
-    params.calculateDirectionality = checked;
-    if(checked)
-        ImProcess(ImIn,params);
-}
-
 
 
 void MainWindow::on_CheckBoxShowOutputTile_toggled(bool checked)
 {
     params.showSmallImage = checked;
-    ui->CheckBoxCalculateDirectionality->setChecked(false);
     ImProcess(ImIn,params);
+}
+
+void MainWindow::on_pushButtonCalculateDorectionality_clicked()
+{
+    time_t begin,end;
+    time (&begin);
+    params.FileName = FileToOpen.stem().string();
+
+    string OutStr = DirEstimation(ImIn, params);
+    time (&end);
+    double difference = difftime (end,begin);
+    string timeString = "calcTime = " + to_string(difference) + " s";
+    ui->textEditOutput->setText(timeString.c_str());
+    ui->textEditOutput->append(OutStr.c_str());
+}
+
+void MainWindow::on_pushButtonCalculateDirectionalityForAll_clicked()
+{
+    int filesCount = ui->ListWidgetFiles->count();
+    ui->textEditOutput->setText("");
+    for(int fileNr = 0; fileNr< filesCount; fileNr++)
+    {
+        time_t begin,end;
+        time (&begin);
+        path LocalFileToOpen = params.InFolderName;
+        params.FileName = ui->ListWidgetFiles->item(fileNr)->text().toStdString();
+        LocalFileToOpen.append(params.FileName);
+        Mat LocalIm = imread(LocalFileToOpen.string(),CV_LOAD_IMAGE_ANYDEPTH);
+
+        DirEstimation(LocalIm, params);
+        time (&end);
+        double difference = difftime (end,begin);
+        string timeString = params.FileName + " calcTime = " + to_string(difference) + " s" + "\n";
+        ui->textEditOutput->append(timeString.c_str());
+        ui->lineEditCurrentFile->setText(params.FileName.c_str());
+        waitKey(20);
+    }
 }

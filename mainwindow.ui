@@ -474,7 +474,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>260</y>
+      <y>250</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -490,7 +490,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>320</y>
+      <y>310</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -605,7 +605,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>350</y>
+      <y>340</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -719,7 +719,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>320</y>
+      <y>310</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -740,7 +740,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>350</y>
+      <y>340</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -894,27 +894,11 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;File Pattern&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="CheckBoxCalculateDirectionality">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>410</y>
-      <width>181</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Calculate Directionality</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="CheckBoxShowOutputText">
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>380</y>
+      <y>370</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -930,7 +914,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>290</y>
+      <y>280</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -948,7 +932,43 @@
       <x>430</x>
       <y>530</y>
       <width>541</width>
-      <height>151</height>
+      <height>141</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonCalculateDorectionality">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>400</y>
+      <width>251</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Calculate directionality for current file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonCalculateDirectionalityForAll">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>430</y>
+      <width>251</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Calculate directionality for all files</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditCurrentFile">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>680</y>
+      <width>541</width>
+      <height>21</height>
      </rect>
     </property>
    </widget>

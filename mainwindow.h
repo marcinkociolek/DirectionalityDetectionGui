@@ -104,12 +104,15 @@ private slots:
 
     void on_CheckBoxShowOutputText_toggled(bool checked);
 
-    void on_CheckBoxCalculateDirectionality_toggled(bool checked);
 
 
 
 
     void on_CheckBoxShowOutputTile_toggled(bool checked);
+
+    void on_pushButtonCalculateDorectionality_clicked();
+
+    void on_pushButtonCalculateDirectionalityForAll_clicked();
 
 private:
     Ui::MainWindow *ui;
