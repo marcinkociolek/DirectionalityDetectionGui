@@ -19,14 +19,14 @@ SOURCES += main.cpp\
         ../../ProjectsLib/LibMarcin/RegionU16Lib.cpp \
         ../../ProjectsLib/LibMarcin/NormalizationLib.cpp \
         ../../ProjectsLib/LibMarcin/HaralickLib.cpp \
-        dirdetectionparams.cpp
+        ../../ProjectsLib/LibMarcin/dirdetectionparams.cpp
 
 HEADERS  += mainwindow.h\
         ../../ProjectsLib/LibMarcin/DispLib.h \
         ../../ProjectsLib/LibMarcin/RegionU16Lib.h \
         ../../ProjectsLib/LibMarcin/NormalizationLib.h \
         ../../ProjectsLib/LibMarcin/HaralickLib.h \
-        dirdetectionparams.h
+        ../../ProjectsLib/LibMarcin/dirdetectionparams.h
 
 FORMS    += mainwindow.ui
 
