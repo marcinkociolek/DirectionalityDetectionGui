@@ -23,6 +23,7 @@ public:
 
     cv::Mat ImIn;
     cv::Mat ImTemp;
+    bool displayFlag;
     //cv::Mat Roi;
     //cv::Mat SmallIm;
     //cv::Mat ImToShow;
@@ -80,8 +81,6 @@ private slots:
 
     void on_spinBoxTileLineWidth_valueChanged(int arg1);
 
-    void on_CheckBoxShowDirection_toggled(bool checked);
-
     void on_spinBoxDirectionLineWidth_valueChanged(int arg1);
 
     void on_spinBoxDirectionLineLenght_valueChanged(int arg1);
@@ -105,14 +104,13 @@ private slots:
     void on_CheckBoxShowOutputText_toggled(bool checked);
 
 
-
-
-
-    void on_CheckBoxShowOutputTile_toggled(bool checked);
-
     void on_pushButtonCalculateDorectionality_clicked();
 
     void on_pushButtonCalculateDirectionalityForAll_clicked();
+
+    void on_CheckBoxShowOutputImage_toggled(bool checked);
+
+    void on_CheckBoxShowOutputTileImage_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>979</width>
-    <height>762</height>
+    <height>736</height>
    </rect>
   </property>
   <property name="font">
@@ -85,7 +85,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>70</y>
+      <y>100</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -101,7 +101,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>160</y>
+      <y>190</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -117,7 +117,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>190</y>
+      <y>220</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -144,7 +144,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>100</y>
+      <y>130</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -171,7 +171,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>130</y>
+      <y>160</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -189,7 +189,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>220</y>
+      <y>250</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -207,7 +207,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>100</y>
+      <y>130</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -228,7 +228,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>220</y>
+      <y>250</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -255,7 +255,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>130</y>
+      <y>160</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -282,7 +282,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>190</y>
+      <y>220</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -302,8 +302,8 @@
    <widget class="QComboBox" name="comboBoxPreprocessType">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>250</y>
+      <x>710</x>
+      <y>100</y>
       <width>251</width>
       <height>24</height>
      </rect>
@@ -312,8 +312,8 @@
    <widget class="QComboBox" name="comboBoxTileShape">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>310</y>
+      <x>710</x>
+      <y>160</y>
       <width>251</width>
       <height>24</height>
      </rect>
@@ -322,8 +322,8 @@
    <widget class="QSpinBox" name="spinBoxPreprocessKernelSize">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>280</y>
+      <x>890</x>
+      <y>130</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -337,8 +337,8 @@
    <widget class="QLabel" name="labelMaxPreprocessKernelSize">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>280</y>
+      <x>710</x>
+      <y>130</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -355,8 +355,8 @@
    <widget class="QLabel" name="labelTileSize">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>340</y>
+      <x>710</x>
+      <y>190</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -376,8 +376,8 @@
    <widget class="QLabel" name="labelOffsetY">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>430</y>
+      <x>710</x>
+      <y>280</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -394,8 +394,8 @@
    <widget class="QLabel" name="labelOffsetX">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>400</y>
+      <x>710</x>
+      <y>250</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -415,8 +415,8 @@
    <widget class="QLabel" name="labelShift">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>370</y>
+      <x>710</x>
+      <y>220</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -437,7 +437,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>460</y>
+      <y>280</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -453,7 +453,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>490</y>
+      <y>310</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -470,27 +470,11 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tile line width&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="CheckBoxShowDirection">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>250</y>
-      <width>181</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Show Output Image</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelDirectionLineWidth">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>310</y>
+      <x>430</x>
+      <y>400</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -511,7 +495,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>130</y>
+      <y>370</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -532,7 +516,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>160</y>
+      <y>400</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -553,7 +537,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>190</y>
+      <y>430</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -574,7 +558,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>70</y>
+      <y>310</y>
       <width>251</width>
       <height>24</height>
      </rect>
@@ -584,7 +568,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>100</y>
+      <y>340</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -604,8 +588,8 @@
    <widget class="QLabel" name="labelDirectionLileLength">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>340</y>
+      <x>430</x>
+      <y>430</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -625,8 +609,8 @@
    <widget class="QSpinBox" name="spinBoxTileSize">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>340</y>
+      <x>890</x>
+      <y>190</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -643,8 +627,8 @@
    <widget class="QSpinBox" name="spinBoxTileOffsetX">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>400</y>
+      <x>890</x>
+      <y>250</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -661,8 +645,8 @@
    <widget class="QSpinBox" name="spinBoxTileOffsetY">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>430</y>
+      <x>890</x>
+      <y>280</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -679,8 +663,8 @@
    <widget class="QSpinBox" name="spinBoxTileShift">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>370</y>
+      <x>890</x>
+      <y>220</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -698,7 +682,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>490</y>
+      <y>310</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -718,8 +702,8 @@
    <widget class="QSpinBox" name="spinBoxDirectionLineWidth">
     <property name="geometry">
      <rect>
-      <x>890</x>
-      <y>310</y>
+      <x>610</x>
+      <y>400</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -739,8 +723,8 @@
    <widget class="QSpinBox" name="spinBoxDirectionLineLenght">
     <property name="geometry">
      <rect>
-      <x>890</x>
-      <y>340</y>
+      <x>610</x>
+      <y>430</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -761,7 +745,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>100</y>
+      <y>340</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -788,7 +772,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>130</y>
+      <y>370</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -803,7 +787,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>160</y>
+      <y>400</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -818,7 +802,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>190</y>
+      <y>430</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -833,7 +817,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>220</y>
+      <y>460</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -854,7 +838,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>220</y>
+      <y>460</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -897,8 +881,8 @@
    <widget class="QCheckBox" name="CheckBoxShowOutputText">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>370</y>
+      <x>430</x>
+      <y>460</y>
       <width>181</width>
       <height>24</height>
      </rect>
@@ -910,27 +894,11 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QCheckBox" name="CheckBoxShowOutputTile">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>280</y>
-      <width>181</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Show Output tile</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="textEditOutput">
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>530</y>
+      <y>500</y>
       <width>541</width>
       <height>141</height>
      </rect>
@@ -939,9 +907,9 @@
    <widget class="QPushButton" name="pushButtonCalculateDorectionality">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>400</y>
-      <width>251</width>
+      <x>10</x>
+      <y>590</y>
+      <width>401</width>
       <height>22</height>
      </rect>
     </property>
@@ -952,9 +920,9 @@
    <widget class="QPushButton" name="pushButtonCalculateDirectionalityForAll">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>430</y>
-      <width>251</width>
+      <x>10</x>
+      <y>650</y>
+      <width>401</width>
       <height>22</height>
      </rect>
     </property>
@@ -966,10 +934,108 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>680</y>
+      <y>650</y>
       <width>541</width>
       <height>21</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBoxFirstFileToProcess">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>620</y>
+      <width>71</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <number>1000</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelFirstFileToProcess">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>620</y>
+      <width>171</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>First File To Process</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="CheckBoxShowOutputImage">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>340</y>
+      <width>181</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show Output Image</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="CheckBoxShowOutputTileImage">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>370</y>
+      <width>181</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show Output Tile Image</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelDispalyoptions">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>70</y>
+      <width>241</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Display Options</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnalysisParams">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>70</y>
+      <width>241</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Analysis Params</string>
     </property>
    </widget>
   </widget>
