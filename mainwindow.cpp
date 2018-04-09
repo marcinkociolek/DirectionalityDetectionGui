@@ -20,6 +20,7 @@
 #include "DispLib.h"
 #include "NormalizationLib.h"
 #include "HaralickLib.h"
+#include "displayfordirdetection.h"
 
 #define PI 3.14159265
 
@@ -131,84 +132,7 @@ void GlobalNormalisation(cv::Mat ImF, int normalisation, float *maxNormGlobal, f
 //-----------------------------------------------------------------------------------------------
 // my functions
 //-----------------------------------------------------------------------------------------------
-void DrawTilesOnImage(cv::Mat ImIn, DirDetectionParams params)
-{
-    if(!params.showTilesOnImage)
-        return;
-    if(ImIn.empty())
-        return;
-    int maxX = ImIn.cols;
-    int maxY = ImIn.rows;
 
-    if(!maxY || !maxY)
-        return;
-
-    int firstTileY = params.tileOffsetY;
-    int lastTileY = maxY - params.tileSize / 2;
-    int firstTileX = params.tileOffsetX;
-    int lastTileX = maxX - params.tileSize / 2;
-
-    switch (params.tileShape)
-    {
-    case 1:
-        {
-            int tileRadius = params.tileSize / 2 ;
-            for (int y = firstTileY; y < lastTileY; y += params.tileShift)
-            {
-                for (int x = firstTileX; x < lastTileX; x += params.tileShift)
-                {
-                    ellipse(ImIn, Point(x, y),
-                        Size(tileRadius, tileRadius), 0.0, 0.0, 360.0,
-                        Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
-                }
-            }
-        }
-        break;
-    case 2:
-        {
-            int edgeLength = params.tileSize/2;
-            int octagonHalfHeight = (int)((float)edgeLength * 0.8660254);
-            for (int y = firstTileY; y < lastTileY; y += params.tileShift)
-            {
-                for (int x = firstTileX; x < lastTileX; x += params.tileShift)
-                {
-
-                    Point vertice0(x - edgeLength / 2, y - octagonHalfHeight);
-                    Point vertice1(x + edgeLength - edgeLength / 2, y - octagonHalfHeight);
-                    Point vertice2(x + edgeLength, y);
-                    Point vertice3(x + edgeLength - edgeLength / 2, y + octagonHalfHeight);
-                    Point vertice4(x - edgeLength / 2, y + octagonHalfHeight);
-                    Point vertice5(x - edgeLength, y);
-
-                    line(ImIn, vertice0, vertice1, Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
-                    line(ImIn, vertice1, vertice2, Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
-                    line(ImIn, vertice2, vertice3, Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
-                    line(ImIn, vertice3, vertice4, Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
-                    line(ImIn, vertice4, vertice5, Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
-                    line(ImIn, vertice5, vertice0, Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
-                }
-            }
-        }
-        break;
-    default:
-        {
-            int tileLeftTopBorderOffset = params.tileSize / 2 ;
-            int tileRigthBottomBorderOffset =  params.tileSize - params.tileSize / 2 - 1 ;
-            for (int y = firstTileY; y < lastTileY; y += params.tileShift)
-            {
-                for (int x = firstTileX; x < lastTileX; x += params.tileShift)
-                {
-                    rectangle(ImIn, Point(x - tileLeftTopBorderOffset, y - tileLeftTopBorderOffset),
-                        Point(x + tileRigthBottomBorderOffset, y + tileRigthBottomBorderOffset),
-                        Scalar(0.0, 0.0, 0.0, 0.0), params.tileLineWidth);
-                }
-            }
-        }
-        break;
-    }
-
-}
-//-----------------------------------------------------------------------------------------------
 void ImShowPC(cv::Mat ImIn,  DirDetectionParams params)
 {
     if(!params.showInputPC)
@@ -240,16 +164,7 @@ Mat PrepareImShow(cv::Mat ImIn,  DirDetectionParams params)
     return ImToShow;
 
 }
-//-----------------------------------------------------------------------------------------------
-void ShowDirection(Mat ImToShow, int y, int x, float direction, int lineWidth, int lineLength)
-{
-    int lineOffsetX = (int)round(lineLength * 0.5 *  sin((double)direction* PI / 180.0));
-    int lineOffsetY = (int)round(lineLength * 0.5 * cos((double)direction* PI / 180.0));
 
-    line(ImToShow, Point(x - lineOffsetX, y - lineOffsetY), Point(x + lineOffsetX, y + lineOffsetY), Scalar(0, 0.0, 0.0, 0.0), lineWidth);
-
-    imshow("ImOut", ImToShow);
-}
 //-----------------------------------------------------------------------------------------------
 void ShowDirectionSmall(Mat ImIn, float direction, DirDetectionParams params, float minNorm, float maxNorm)
 {
