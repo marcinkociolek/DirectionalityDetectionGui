@@ -505,6 +505,10 @@ void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentTex
     ImIn = imread(FileToOpen.string().c_str(),CV_LOAD_IMAGE_ANYDEPTH);
     if(ImIn.empty())
         return;
+    if(ImIn.type() != CV_16U)
+    {
+        ImIn.convertTo(ImIn,CV_16U);
+    }
     ImProcess(ImIn,params);
 
 
@@ -754,6 +758,12 @@ void MainWindow::on_pushButtonCalculateDirectionalityForAll_clicked()
         params.FileName = ui->ListWidgetFiles->item(fileNr)->text().toStdString();
         LocalFileToOpen.append(params.FileName);
         Mat LocalIm = imread(LocalFileToOpen.string(),CV_LOAD_IMAGE_ANYDEPTH);
+
+        if(LocalIm.type() != CV_16U)
+        {
+            LocalIm.convertTo(ImIn,CV_16U);
+        }
+
 
         DirEstimation(LocalIm, params);
         time (&end);
