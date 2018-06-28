@@ -623,6 +623,9 @@
     <property name="minimum">
      <number>3</number>
     </property>
+    <property name="maximum">
+     <number>201</number>
+    </property>
    </widget>
    <widget class="QSpinBox" name="spinBoxTileOffsetX">
     <property name="geometry">
