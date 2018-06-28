@@ -623,9 +623,6 @@
     <property name="minimum">
      <number>3</number>
     </property>
-    <property name="maximum">
-     <number>201</number>
-    </property>
    </widget>
    <widget class="QSpinBox" name="spinBoxTileOffsetX">
     <property name="geometry">
@@ -643,9 +640,6 @@
     </property>
     <property name="minimum">
      <number>2</number>
-    </property>
-    <property name="maximum">
-     <number>101</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="spinBoxTileOffsetY">
@@ -665,12 +659,6 @@
     <property name="minimum">
      <number>2</number>
     </property>
-    <property name="maximum">
-     <number>101</number>
-    </property>
-    <property name="singleStep">
-     <number>1</number>
-    </property>
    </widget>
    <widget class="QSpinBox" name="spinBoxTileShift">
     <property name="geometry">
@@ -688,9 +676,6 @@
     </property>
     <property name="minimum">
      <number>1</number>
-    </property>
-    <property name="maximum">
-     <number>201</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="spinBoxTileLineWidth">
