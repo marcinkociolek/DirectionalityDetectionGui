@@ -1,0 +1,7 @@
+Direction Detection Gui delta file:
+2018.08.31
+1) corrected Gray Level Display
+2) additional file formats: tif, tiff, bmp, jpg, jpeg, png
+3) images can be 8 or 16 bpp
+4) color images are converted to gray (for now by default converter)
+5) calculation can be breaked

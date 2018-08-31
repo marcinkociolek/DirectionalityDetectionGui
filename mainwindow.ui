@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>979</width>
-    <height>736</height>
+    <height>749</height>
    </rect>
   </property>
   <property name="font">
@@ -24,7 +24,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>121</width>
+      <width>181</width>
       <height>24</height>
      </rect>
     </property>
@@ -38,9 +38,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>200</x>
       <y>10</y>
-      <width>821</width>
+      <width>761</width>
       <height>24</height>
      </rect>
     </property>
@@ -50,7 +50,7 @@
      <rect>
       <x>10</x>
       <y>40</y>
-      <width>121</width>
+      <width>181</width>
       <height>24</height>
      </rect>
     </property>
@@ -64,9 +64,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>200</x>
       <y>40</y>
-      <width>821</width>
+      <width>761</width>
       <height>24</height>
      </rect>
     </property>
@@ -86,7 +86,7 @@
      <rect>
       <x>430</x>
       <y>100</y>
-      <width>181</width>
+      <width>251</width>
       <height>24</height>
      </rect>
     </property>
@@ -102,7 +102,7 @@
      <rect>
       <x>430</x>
       <y>190</y>
-      <width>181</width>
+      <width>251</width>
       <height>24</height>
      </rect>
     </property>
@@ -200,7 +200,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Max  display pseudo color</string>
+     <string>Max  display PC</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelMinDispGray">
@@ -296,7 +296,7 @@
      <bool>true</bool>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Min display pseudo color&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Min display PC&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QComboBox" name="comboBoxPreprocessType">
@@ -895,7 +895,7 @@
      <rect>
       <x>430</x>
       <y>460</y>
-      <width>181</width>
+      <width>251</width>
       <height>24</height>
      </rect>
     </property>
@@ -920,9 +920,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>590</y>
+      <y>581</y>
       <width>401</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -935,7 +935,7 @@
       <x>10</x>
       <y>650</y>
       <width>401</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -983,7 +983,7 @@
      <rect>
       <x>430</x>
       <y>340</y>
-      <width>181</width>
+      <width>251</width>
       <height>24</height>
      </rect>
     </property>
@@ -999,7 +999,7 @@
      <rect>
       <x>430</x>
       <y>370</y>
-      <width>181</width>
+      <width>251</width>
       <height>24</height>
      </rect>
     </property>
@@ -1048,6 +1048,19 @@
     </property>
     <property name="text">
      <string>Analysis Params</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonSop">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>620</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Break</string>
     </property>
    </widget>
   </widget>

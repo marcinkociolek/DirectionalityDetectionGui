@@ -21,6 +21,8 @@ public:
 
     bool stopProcess;
 
+    bool breakProcess;
+
     cv::Mat ImIn;
     cv::Mat ImTemp;
     bool displayFlag;
@@ -111,6 +113,8 @@ private slots:
     void on_CheckBoxShowOutputImage_toggled(bool checked);
 
     void on_CheckBoxShowOutputTileImage_toggled(bool checked);
+
+    void on_pushButtonSop_clicked();
 
 private:
     Ui::MainWindow *ui;

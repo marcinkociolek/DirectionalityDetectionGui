@@ -151,7 +151,7 @@ void ImShowGray(cv::Mat ImIn,  DirDetectionParams params)
         return;
     if(ImIn.empty())
         return;
-    Mat ImToShow = ShowImage16Gray(ImIn, params.displayPCMin, params.displayPCMax);
+    Mat ImToShow = ShowImage16Gray(ImIn, params.displayGrayMin, params.displayGrayMax);
     DrawTilesOnImage(ImToShow, params);
     imshow("Input Gray", ImToShow);
     ImToShow.release();
@@ -179,7 +179,7 @@ void ShowDirectionSmall(Mat ImIn, float direction, DirDetectionParams params, fl
 }
 
 //-----------------------------------------------------------------------------------------------
-string DirEstimation(cv::Mat ImIn,  DirDetectionParams params)
+string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
 {
     Mat Roi = CreateStandardROI(params.tileSize, params.tileShape);
     if(params.showTileRoiImage)
@@ -291,8 +291,16 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params)
             //LocalDataString += "n";
             OutDataString += LocalDataString;
             OutDataString += "\n";
+
+            if(*stopCalc)
+                break;
+
         }
+        if(*stopCalc)
+            break;
     }
+    if(*stopCalc)
+        OutDataString += "!!!!!BREAKED!!!!! \n";
     // release memory
     delete[] CorrelationAvg;
     CorrelationAvg = 0;
@@ -317,7 +325,10 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params)
         }
 
         path textOutFile = outDir;
-        textOutFile.append(params.FileName + ".txt");
+        if(*stopCalc)
+            textOutFile.append(params.FileName + "Breaked.txt");
+        else
+            textOutFile.append(params.FileName + ".txt");
 
         std::ofstream out (textOutFile.string());
         out << OutDataString;
@@ -339,7 +350,12 @@ void MainWindow::ReloadFileList()
     ui->ListWidgetFiles->clear();
     for (directory_entry& FileToProcess : directory_iterator(InputDirectory))
     {
-        if (FileToProcess.path().extension() != ".tif" && FileToProcess.path().extension() != ".png" )
+        if (FileToProcess.path().extension() != ".tif" &&
+            FileToProcess.path().extension() != ".tiff" &&
+            FileToProcess.path().extension() != ".bmp" &&
+            FileToProcess.path().extension() != ".jpg" &&
+            FileToProcess.path().extension() != ".jpeg" &&
+            FileToProcess.path().extension() != ".png" )
             continue;
         path PathLocal = FileToProcess.path();
 
@@ -509,6 +525,7 @@ void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentTex
     {
         ImIn.convertTo(ImIn,CV_16U);
     }
+
     ImProcess(ImIn,params);
 
 
@@ -733,11 +750,12 @@ void MainWindow::on_CheckBoxShowOutputText_toggled(bool checked)
 
 void MainWindow::on_pushButtonCalculateDorectionality_clicked()
 {
+    breakProcess = false;
     time_t begin,end;
     time (&begin);
     params.FileName = FileToOpen.stem().string();
 
-    string OutStr = DirEstimation(ImIn, params);
+    string OutStr = DirEstimation(ImIn, params, &breakProcess);
     time (&end);
     double difference = difftime (end,begin);
     string timeString = "calcTime = " + to_string(difference) + " s";
@@ -747,6 +765,7 @@ void MainWindow::on_pushButtonCalculateDorectionality_clicked()
 
 void MainWindow::on_pushButtonCalculateDirectionalityForAll_clicked()
 {
+    breakProcess = false;
     int filesCount = ui->ListWidgetFiles->count();
     int firstFile = ui->spinBoxFirstFileToProcess->value();
     ui->textEditOutput->clear();
@@ -765,13 +784,15 @@ void MainWindow::on_pushButtonCalculateDirectionalityForAll_clicked()
         }
 
 
-        DirEstimation(LocalIm, params);
+        DirEstimation(LocalIm, params, &breakProcess);
         time (&end);
         double difference = difftime (end,begin);
         string timeString = params.FileName + " calcTime = " + to_string(difference) + " s" + "\n";
         ui->textEditOutput->append(timeString.c_str());
         ui->lineEditCurrentFile->setText(params.FileName.c_str());
         waitKey(20);
+        if( breakProcess)
+            break;
     }
 }
 
@@ -801,3 +822,8 @@ void MainWindow::on_CheckBoxShowOutputTileImage_toggled(bool checked)
     }
 }
 
+
+void MainWindow::on_pushButtonSop_clicked()
+{
+    breakProcess = true;
+}
