@@ -292,10 +292,13 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
             OutDataString += LocalDataString;
             OutDataString += "\n";
 
+
+
             if(*stopCalc)
                 break;
 
         }
+
         if(*stopCalc)
             break;
     }
@@ -753,7 +756,7 @@ void MainWindow::on_pushButtonCalculateDorectionality_clicked()
     breakProcess = false;
     time_t begin,end;
     time (&begin);
-    params.FileName = FileToOpen.stem().string();
+    params.FileName = FileToOpen.filename().string();
 
     string OutStr = DirEstimation(ImIn, params, &breakProcess);
     time (&end);
@@ -776,11 +779,11 @@ void MainWindow::on_pushButtonCalculateDirectionalityForAll_clicked()
         path LocalFileToOpen = params.InFolderName;
         params.FileName = ui->ListWidgetFiles->item(fileNr)->text().toStdString();
         LocalFileToOpen.append(params.FileName);
-        Mat LocalIm = imread(LocalFileToOpen.string(),CV_LOAD_IMAGE_ANYDEPTH);
+        Mat LocalIm = imread(LocalFileToOpen.string().c_str(),CV_LOAD_IMAGE_ANYDEPTH);
 
         if(LocalIm.type() != CV_16U)
         {
-            LocalIm.convertTo(ImIn,CV_16U);
+            LocalIm.convertTo(LocalIm,CV_16U);
         }
 
 
