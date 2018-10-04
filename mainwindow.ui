@@ -910,9 +910,9 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>500</y>
+      <y>540</y>
       <width>541</width>
-      <height>141</height>
+      <height>101</height>
      </rect>
     </property>
    </widget>
@@ -1061,6 +1061,16 @@
     </property>
     <property name="text">
      <string>Break</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBoxScaleImages">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>490</y>
+      <width>251</width>
+      <height>22</height>
+     </rect>
     </property>
    </widget>
   </widget>

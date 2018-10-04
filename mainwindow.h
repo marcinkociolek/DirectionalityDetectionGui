@@ -37,6 +37,8 @@ public:
 
     std::string ParamsString;
 
+    //double imagesScale;
+
     void ImProcess(cv::Mat ImIn,  DirDetectionParams params);
 
     //-----------------------------------------------------------------------------------------------
@@ -115,6 +117,8 @@ private slots:
     void on_CheckBoxShowOutputTileImage_toggled(bool checked);
 
     void on_pushButtonSop_clicked();
+
+    void on_comboBoxScaleImages_currentIndexChanged(int index);
 
 private:
     Ui::MainWindow *ui;

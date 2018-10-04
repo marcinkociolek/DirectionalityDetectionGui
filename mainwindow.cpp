@@ -141,6 +141,8 @@ void ImShowPC(cv::Mat ImIn,  DirDetectionParams params)
         return;
     Mat ImToShow = ShowImage16PseudoColor(ImIn, params.displayPCMin, params.displayPCMax);
     DrawTilesOnImage(ImToShow, params);
+    if (params.imagesScale !=1.0)
+        cv::resize(ImToShow,ImToShow,Size(),params.imagesScale,params.imagesScale,INTER_NEAREST);
     imshow("Input Pseudo Color", ImToShow);
     ImToShow.release();
 }
@@ -153,6 +155,8 @@ void ImShowGray(cv::Mat ImIn,  DirDetectionParams params)
         return;
     Mat ImToShow = ShowImage16Gray(ImIn, params.displayGrayMin, params.displayGrayMax);
     DrawTilesOnImage(ImToShow, params);
+    if (params.imagesScale !=1.0)
+        cv::resize(ImToShow,ImToShow,Size(),params.imagesScale,params.imagesScale,INTER_NEAREST);
     imshow("Input Gray", ImToShow);
     ImToShow.release();
 }
@@ -271,7 +275,7 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
             bestAngleCorAvg = FindBestAngleMax(CorrelationAvg, stepNr);
             if(params.showOutputImage)
             {
-                ShowDirection(ImToShow, y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength);
+                ShowDirection(ImToShow, y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength, params.imagesScale);
             }
             if(params.showTileOutputImage)
             {
@@ -429,6 +433,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBoxNormalisation->addItem("Normalization global +/- 3 sigma");
     ui->comboBoxNormalisation->addItem("Normalization tile 1%-99%");
     ui->comboBoxNormalisation->addItem("Normalization global 1%-99%");
+
+    ui->comboBoxScaleImages->addItem("Images scale x 4");
+    ui->comboBoxScaleImages->addItem("Images scale x 2");
+    ui->comboBoxScaleImages->addItem("Images scale x 1");
+    ui->comboBoxScaleImages->addItem("Images scale x 1/2");
+    ui->comboBoxScaleImages->addItem("Images scale x 1/4");
+    ui->comboBoxScaleImages->setCurrentIndex(2);
+    params.imagesScale = 1.0;
 
     params.DefaultParams();
     ui->comboBoxPreprocessType->setCurrentIndex(params.preprocessType);
@@ -829,4 +841,32 @@ void MainWindow::on_CheckBoxShowOutputTileImage_toggled(bool checked)
 void MainWindow::on_pushButtonSop_clicked()
 {
     breakProcess = true;
+}
+
+void MainWindow::on_comboBoxScaleImages_currentIndexChanged(int index)
+{
+    switch(index)
+    {
+    case 0:
+        params.imagesScale = 4.0;
+        break;
+    case 1:
+        params.imagesScale = 2.0;
+        break;
+    case 2:
+        params.imagesScale = 1.0;
+        break;
+
+    case 3:
+        params.imagesScale = 1.0/2.0;
+        break;
+    case 4:
+        params.imagesScale = 1.0/4.0;
+        break;
+    default:
+        params.imagesScale = 1.0;
+        break;
+    }
+    ImShowPC(ImIn,params);
+    ImShowGray(ImIn,params);
 }
