@@ -215,9 +215,18 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
     OutDataString += "Tile Y\tTile X\t";
     OutDataString += "Angle \t";
     OutDataString += "Tile min norm\tTile max norm\t";
+    int maxOffsetGranularity = 1;
+    if(params.granularityCalc)
+    {
+        maxOffsetGranularity = params.granularityFirstOfset + params.granularityOffsetCount * params.granularityOffsetStep;
+        for (int offset = params.granularityFirstOfset; offset <= maxOffsetGranularity; offset += params.offsetStep)
+        {
+           OutDataString += "CorrelationOff" + to_string(offset) + "\t";
+        }
+    }
     OutDataString += "\n";
 
-    int maxOffset = params.minOffset + params. offsetCount * params.offsetStep;
+    int maxOffset = params.minOffset + params.offsetCount * params.offsetStep;
 
     int firstTileY = params.tileOffsetY;
     int lastTileY = maxY - params.tileSize / 2;
@@ -292,8 +301,31 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
             LocalDataString += to_string(bestAngleCorAvg) + "\t";
             LocalDataString += to_string(minNorm) + "\t";
             LocalDataString += to_string(maxNorm) + "\t";
+
+
+            string granularityDataString = "";
+            if(params.granularityCalc)
+            {
+                float angle = bestAngleCorAvg + 90;
+                for (int offset = params.granularityFirstOfset; offset <= maxOffsetGranularity; offset += params.offsetStep)
+                {
+                    COM.release();
+
+                    if (params.tileShape)
+                        COM = COMCardoneRoi(SmallIm, Roi, offset, angle, params.binCount, maxNorm, minNorm, 0, 1);
+                    else
+                        COM = COMCardone4(SmallIm, offset, angle, params.binCount, maxNorm, minNorm, 0);
+
+                    granularityDataString += to_string(COMCorrelation(COM));
+                    granularityDataString += "\t";
+                }
+
+            }
+
+
             //LocalDataString += "n";
             OutDataString += LocalDataString;
+            OutDataString += granularityDataString;
             OutDataString += "\n";
 
 
@@ -474,6 +506,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->spinBoxOffsetStep->setValue(params.offsetStep);
 
     ui->CheckBoxShowOutputText->setChecked(params.showOutputText);
+
+    ui->checkBoxCalculateGranuraity->setChecked(params.granularityCalc);
+    ui->spinBoxGranuralityOffsetCount->setValue(params.granularityOffsetCount);
+    ui->spinBoxGranularityOffsetStep->setValue(params.granularityOffsetStep);
 
     InputDirectory = params.InFolderName;
     ui->LineEditInDirectory->setText(QString::fromWCharArray(InputDirectory.wstring().c_str()));
@@ -869,4 +905,20 @@ void MainWindow::on_comboBoxScaleImages_currentIndexChanged(int index)
     }
     ImShowPC(ImIn,params);
     ImShowGray(ImIn,params);
+}
+
+void MainWindow::on_checkBoxCalculateGranuraity_toggled(bool checked)
+{
+    params.granularityCalc = checked;
+}
+
+
+void MainWindow::on_spinBoxGranuralityOffsetCount_valueChanged(int arg1)
+{
+    params.granularityOffsetCount = arg1;
+}
+
+void MainWindow::on_spinBoxGranularityOffsetStep_valueChanged(int arg1)
+{
+    params.granularityOffsetStep = arg1;
 }

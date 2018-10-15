@@ -120,6 +120,12 @@ private slots:
 
     void on_comboBoxScaleImages_currentIndexChanged(int index);
 
+    void on_checkBoxCalculateGranuraity_toggled(bool checked);
+
+    void on_spinBoxGranuralityOffsetCount_valueChanged(int arg1);
+
+    void on_spinBoxGranularityOffsetStep_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 };
