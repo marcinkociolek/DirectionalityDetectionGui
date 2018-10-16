@@ -126,6 +126,10 @@ private slots:
 
     void on_spinBoxGranularityOffsetStep_valueChanged(int arg1);
 
+    void on_checkBoxMaZdaStyleOut_toggled(bool checked);
+
+    void on_lineEditClassName_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 };

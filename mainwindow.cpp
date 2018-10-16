@@ -211,19 +211,31 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
 
     GlobalNormalisation(ImInF, params.normalisation , &maxNormGlobal, &minNormGlobal);
 
+    string dataSeparator = params.dataSeparator;
+
     string OutDataString = params.ShowParams();
-    OutDataString += "Tile Y\tTile X\t";
-    OutDataString += "Angle \t";
-    OutDataString += "Tile min norm\tTile max norm\t";
+    OutDataString += "Tile Y";
+    OutDataString += dataSeparator;
+    OutDataString += "Tile X";
+    OutDataString += dataSeparator;
+    OutDataString += "Angle";
+    OutDataString += dataSeparator;
+    OutDataString += "Tile min norm";
+    OutDataString += dataSeparator;
+    OutDataString += "Tile max norm";
+    OutDataString += dataSeparator;
     int maxOffsetGranularity = 1;
     if(params.granularityCalc)
     {
         maxOffsetGranularity = params.granularityFirstOfset + params.granularityOffsetCount * params.granularityOffsetStep;
         for (int offset = params.granularityFirstOfset; offset <= maxOffsetGranularity; offset += params.offsetStep)
         {
-           OutDataString += "CorrelationOff" + to_string(offset) + "\t";
+           OutDataString += "CorrelationOff" + to_string(offset);
+           OutDataString += dataSeparator;
         }
     }
+    OutDataString += "Class Name";
+    OutDataString += dataSeparator;
     OutDataString += "\n";
 
     int maxOffset = params.minOffset + params.offsetCount * params.offsetStep;
@@ -296,11 +308,16 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
                 waitKey(10);
 
             string LocalDataString;
-            LocalDataString += to_string(y) + "\t";
-            LocalDataString += to_string(x) + "\t";
-            LocalDataString += to_string(bestAngleCorAvg) + "\t";
-            LocalDataString += to_string(minNorm) + "\t";
-            LocalDataString += to_string(maxNorm) + "\t";
+            LocalDataString += to_string(y);
+            LocalDataString += dataSeparator;
+            LocalDataString += to_string(x);
+            LocalDataString += dataSeparator;
+            LocalDataString += to_string(bestAngleCorAvg);
+            LocalDataString += dataSeparator;
+            LocalDataString += to_string(minNorm);
+            LocalDataString += dataSeparator;
+            LocalDataString += to_string(maxNorm);
+            LocalDataString += dataSeparator;
 
 
             string granularityDataString = "";
@@ -317,7 +334,7 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
                         COM = COMCardone4(SmallIm, offset, angle, params.binCount, maxNorm, minNorm, 0);
 
                     granularityDataString += to_string(COMCorrelation(COM));
-                    granularityDataString += "\t";
+                    granularityDataString += dataSeparator;
                 }
 
             }
@@ -326,6 +343,8 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
             //LocalDataString += "n";
             OutDataString += LocalDataString;
             OutDataString += granularityDataString;
+            OutDataString += params.className;
+            OutDataString += dataSeparator;
             OutDataString += "\n";
 
 
@@ -510,6 +529,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->checkBoxCalculateGranuraity->setChecked(params.granularityCalc);
     ui->spinBoxGranuralityOffsetCount->setValue(params.granularityOffsetCount);
     ui->spinBoxGranularityOffsetStep->setValue(params.granularityOffsetStep);
+
+    ui->checkBoxMaZdaStyleOut->setChecked(params.maZdaStyleOut);
+    ui->lineEditClassName->setText(QString::fromStdString(params.className));
+
 
     InputDirectory = params.InFolderName;
     ui->LineEditInDirectory->setText(QString::fromWCharArray(InputDirectory.wstring().c_str()));
@@ -921,4 +944,14 @@ void MainWindow::on_spinBoxGranuralityOffsetCount_valueChanged(int arg1)
 void MainWindow::on_spinBoxGranularityOffsetStep_valueChanged(int arg1)
 {
     params.granularityOffsetStep = arg1;
+}
+
+void MainWindow::on_checkBoxMaZdaStyleOut_toggled(bool checked)
+{
+    params.maZdaStyleOut = checked;
+}
+
+void MainWindow::on_lineEditClassName_textChanged(const QString &arg1)
+{
+    params.className = arg1.toStdString();
 }
