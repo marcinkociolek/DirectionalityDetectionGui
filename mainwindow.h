@@ -130,6 +130,8 @@ private slots:
 
     void on_lineEditClassName_textChanged(const QString &arg1);
 
+    void on_comboBoxDataSeparator_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
 };

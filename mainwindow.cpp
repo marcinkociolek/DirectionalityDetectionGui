@@ -213,7 +213,11 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
 
     string dataSeparator = params.dataSeparator;
 
-    string OutDataString = params.ShowParams();
+    string OutDataString;
+    if(params.maZdaStyleOut)
+        OutDataString = "";
+    else
+        OutDataString = params.ShowParams();
     OutDataString += "Tile Y";
     OutDataString += dataSeparator;
     OutDataString += "Tile X";
@@ -230,12 +234,19 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
         maxOffsetGranularity = params.granularityFirstOfset + params.granularityOffsetCount * params.granularityOffsetStep;
         for (int offset = params.granularityFirstOfset; offset <= maxOffsetGranularity; offset += params.offsetStep)
         {
+           OutDataString += "ContrastOff" + to_string(offset);
+           OutDataString += dataSeparator;
+           OutDataString += "EnergyOff" + to_string(offset);
+           OutDataString += dataSeparator;
+           OutDataString += "HomogeneityOff" + to_string(offset);
+           OutDataString += dataSeparator;
            OutDataString += "CorrelationOff" + to_string(offset);
            OutDataString += dataSeparator;
         }
     }
     OutDataString += "Class Name";
-    OutDataString += dataSeparator;
+    if(!params.maZdaStyleOut)
+        OutDataString += dataSeparator;
     OutDataString += "\n";
 
     int maxOffset = params.minOffset + params.offsetCount * params.offsetStep;
@@ -333,7 +344,16 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
                     else
                         COM = COMCardone4(SmallIm, offset, angle, params.binCount, maxNorm, minNorm, 0);
 
-                    granularityDataString += to_string(COMCorrelation(COM));
+                    float contrast, energy, homogeneity, correlation;
+                    COMParams(COM, &contrast, &energy, &homogeneity, &correlation);
+                    //granularityDataString += to_string(COMCorrelation(COM));
+                    granularityDataString += to_string(contrast);
+                    granularityDataString += dataSeparator;
+                    granularityDataString += to_string(energy);
+                    granularityDataString += dataSeparator;
+                    granularityDataString += to_string(homogeneity);
+                    granularityDataString += dataSeparator;
+                    granularityDataString += to_string(correlation);
                     granularityDataString += dataSeparator;
                 }
 
@@ -344,7 +364,8 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
             OutDataString += LocalDataString;
             OutDataString += granularityDataString;
             OutDataString += params.className;
-            OutDataString += dataSeparator;
+            if(!params.maZdaStyleOut)
+                OutDataString += dataSeparator;
             OutDataString += "\n";
 
 
@@ -455,6 +476,32 @@ void MainWindow::ShowDirection(int y, int x, float direction, int lineWidth, int
 }
 */
 //-----------------------------------------------------------------------------------------------
+int NumberFromDataSeparator(std::string dataSeparator)
+{
+
+    if(dataSeparator == "\t")
+        return 0;
+    if(dataSeparator == ";")
+        return 1;
+    if(dataSeparator == ",")
+        return 2;
+
+    return 0;
+}
+//-----------------------------------------------------------------------------------------------
+std::string DataSeparatorFromNumber(int number)
+{
+
+    if(number == 0)
+        return "\t";
+    if(number == 1)
+        return ";";
+    if(number == 2)
+        return ",";
+
+    return "\t";
+}
+
 
 //-----------------------------------------------------------------------------------------------
 // system functions
@@ -538,6 +585,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LineEditInDirectory->setText(QString::fromWCharArray(InputDirectory.wstring().c_str()));
     ui->LineEditFilePattern->setText(params.InFilePattern.c_str());
 
+    ui->comboBoxDataSeparator->addItem("data separator \"\\t\"");
+    ui->comboBoxDataSeparator->addItem("data separator \";\"");
+    ui->comboBoxDataSeparator->addItem("data separator \",\"");
+    ui->comboBoxDataSeparator->setCurrentIndex(NumberFromDataSeparator(params.dataSeparator));
     ImTemp = Mat::ones(100,100,0)*200;
 
     displayFlag = WINDOW_AUTOSIZE;
@@ -954,4 +1005,9 @@ void MainWindow::on_checkBoxMaZdaStyleOut_toggled(bool checked)
 void MainWindow::on_lineEditClassName_textChanged(const QString &arg1)
 {
     params.className = arg1.toStdString();
+}
+
+void MainWindow::on_comboBoxDataSeparator_currentIndexChanged(int index)
+{
+    params.dataSeparator = DataSeparatorFromNumber(index);
 }

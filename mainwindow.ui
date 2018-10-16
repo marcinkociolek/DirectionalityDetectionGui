@@ -910,9 +910,9 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>600</y>
+      <y>620</y>
       <width>541</width>
-      <height>101</height>
+      <height>81</height>
      </rect>
     </property>
    </widget>
@@ -1077,7 +1077,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>500</y>
+      <y>520</y>
       <width>221</width>
       <height>20</height>
      </rect>
@@ -1090,7 +1090,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>530</y>
+      <y>550</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -1111,7 +1111,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>560</y>
+      <y>580</y>
       <width>172</width>
       <height>24</height>
      </rect>
@@ -1132,7 +1132,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>530</y>
+      <y>550</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -1156,7 +1156,7 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>560</y>
+      <y>580</y>
       <width>70</width>
       <height>24</height>
      </rect>
@@ -1177,7 +1177,7 @@
     <property name="geometry">
      <rect>
       <x>542</x>
-      <y>560</y>
+      <y>550</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -1187,8 +1187,8 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>560</y>
-      <width>172</width>
+      <y>550</y>
+      <width>111</width>
       <height>24</height>
      </rect>
     </property>
@@ -1215,6 +1215,16 @@
     </property>
     <property name="text">
      <string>MaZda out file</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBoxDataSeparator">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>580</y>
+      <width>251</width>
+      <height>22</height>
+     </rect>
     </property>
    </widget>
   </widget>
