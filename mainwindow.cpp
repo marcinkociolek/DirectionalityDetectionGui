@@ -106,7 +106,7 @@ void Preprocess(cv::Mat Im, int preprocessType, int preprocesKernelSize)
     }
 }
 //-----------------------------------------------------------------------------------------------
-void GlobalNormalisation(cv::Mat ImF, int normalisation, float *maxNormGlobal, float *minNormGlobal)
+void GlobalNormalisation(cv::Mat ImF, int normalisation, double *maxNormGlobal, double *minNormGlobal)
 {
     switch (normalisation)
     {
@@ -206,8 +206,8 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
     int maxX = ImInF.cols;
     int maxY = ImInF.rows;
 
-    float maxNormGlobal = 65535;
-    float minNormGlobal = 0;
+    double maxNormGlobal = 65535.0;
+    double minNormGlobal = 0.0;
 
     GlobalNormalisation(ImInF, params.normalisation , &maxNormGlobal, &minNormGlobal);
 
