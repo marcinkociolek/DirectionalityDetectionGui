@@ -261,7 +261,7 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
         {
 
             ImInF(Rect(x - Roi.cols / 2, y - Roi.rows / 2, Roi.cols, Roi.rows)).copyTo(SmallIm);
-            float maxNorm, minNorm;
+            double maxNorm, minNorm;
             switch (params.normalisation)
             {
             case 1:
