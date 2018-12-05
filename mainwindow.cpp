@@ -252,9 +252,9 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
     int maxOffset = params.minOffset + params.offsetCount * params.offsetStep;
 
     int firstTileY = params.tileOffsetY;
-    int lastTileY = maxY - params.tileSize / 2;
+    int lastTileY = maxY - params.tileSize / 2 - 1;
     int firstTileX = params.tileOffsetX;
-    int lastTileX = maxX - params.tileSize / 2;
+    int lastTileX = maxX - params.tileSize / 2  - 1;
     for (int y = firstTileY; y <= lastTileY; y += params.tileShift)
     {
         for (int x = firstTileX; x <= lastTileX; x += params.tileShift)
