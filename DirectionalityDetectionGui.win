@@ -33,27 +33,26 @@ HEADERS  += mainwindow.h\
 FORMS    += mainwindow.ui
 
 
-INCLUDEPATH += /usr/include/boost/
-INCLUDEPATH += ../../ProjectsLib/LibMarcin/
-INCLUDEPATH += ../SkopiaSegment/
-INCLUDEPATH +=/home/marcin/Documents/ProjectsForeign/usr/opencv541CudaDynamicGTK2/include/opencv4/
+win32: INCLUDEPATH += C:\opencv\build\include\
+win32: INCLUDEPATH += C:\boost_1_66_0\
+win32: INCLUDEPATH += C:\LibTiff\Include\
+win32: INCLUDEPATH += ../../ProjectsLib\LibMarcin\
+win32: INCLUDEPATH += ../../ProjectsLibForein/LibPMS/
+
+# this is for debug
+#win32: LIBS += -LC:/opencv/build/x64/vc15/lib/
+#win32: LIBS += -lopencv_world341d
+
+#win32: LIBS += -LC:/boost_1_66_0/stage/x64/lib/
+#win32:  LIBS += -lboost_filesystem-vc141-mt-gd-x64-1_66
+#win32:  LIBS += -lboost_regex-vc141-mt-gd-x64-1_66
 
 
-LIBS += -ltiff
-LIBS += -lboost_filesystem
-LIBS += -lboost_regex
+# this is for release
+win32: LIBS += -LC:/opencv/build/x64/vc15/lib/
+win32: LIBS += -lopencv_world341
 
-LIBS += -L/home/marcin/Documents/ProjectsForeign/usr/opencv541CudaDynamicGTK2/lib/
+win32: LIBS += -LC:/boost_1_66_0/stage/x64/lib/
+win32:  LIBS += -lboost_filesystem-vc141-mt-x64-1_66
+win32:  LIBS += -lboost_regex-vc141-mt-x64-1_66
 
-LIBS += -lopencv_highgui
-LIBS += -lopencv_core
-LIBS += -lopencv_imgproc
-
-LIBS += -lopencv_features2d
-LIBS += -lopencv_imgcodecs
-
-LIBS += -lopencv_dnn
-
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target

@@ -643,7 +643,7 @@ void MainWindow::on_ListWidgetFiles_currentTextChanged(const QString &currentTex
     FileToOpen.append(CurrentFileName);
     if(!exists(FileToOpen))
         return;
-    ImIn = imread(FileToOpen.string().c_str(),CV_LOAD_IMAGE_ANYDEPTH);
+    ImIn = imread(FileToOpen.string().c_str(),cv::IMREAD_ANYDEPTH);
     if(ImIn.empty())
         return;
     if(ImIn.type() != CV_16U)
@@ -665,7 +665,7 @@ void MainWindow::on_CheckBoxShowInputImageGray_toggled(bool checked)
     }
     else
     {
-        destroyWindow("Input Gray");
+        //destroyWindow("Input Gray");
     }
     ImProcess(ImIn,params);
 }
@@ -679,7 +679,7 @@ void MainWindow::on_CheckBoxShowInputImagePC_toggled(bool checked)
     }
     else
     {
-        destroyWindow("Input Pseudo Color");
+        //destroyWindow("Input Pseudo Color");
     }
     ImProcess(ImIn,params);
 }
@@ -901,7 +901,7 @@ void MainWindow::on_pushButtonCalculateDirectionalityForAll_clicked()
         path LocalFileToOpen = params.InFolderName;
         params.FileName = ui->ListWidgetFiles->item(fileNr)->text().toStdString();
         LocalFileToOpen.append(params.FileName);
-        Mat LocalIm = imread(LocalFileToOpen.string().c_str(),CV_LOAD_IMAGE_ANYDEPTH);
+        Mat LocalIm = imread(LocalFileToOpen.string().c_str(),cv::IMREAD_ANYDEPTH);
 
         if(LocalIm.type() != CV_16U)
         {
@@ -930,7 +930,7 @@ void MainWindow::on_CheckBoxShowOutputImage_toggled(bool checked)
     }
     else
     {
-        destroyWindow("ImOut");
+        //destroyWindow("ImOut");
     }
 }
 
@@ -943,7 +943,7 @@ void MainWindow::on_CheckBoxShowOutputTileImage_toggled(bool checked)
     }
     else
     {
-        destroyWindow("ImSmall");
+        //destroyWindow("ImSmall");
     }
 }
 

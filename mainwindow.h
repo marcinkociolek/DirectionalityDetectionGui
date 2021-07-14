@@ -43,7 +43,7 @@ public:
 
     //-----------------------------------------------------------------------------------------------
 
-    void MainWindow::ReloadFileList();
+    void ReloadFileList();
     //void MainWindow::PrepareImShow();
     //void MainWindow::ShowDirection(int y, int x, float direction, int lineWidth, int lineLength);
 
