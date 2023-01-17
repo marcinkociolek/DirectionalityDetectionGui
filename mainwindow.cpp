@@ -170,6 +170,14 @@ Mat PrepareImShow(cv::Mat ImIn,  DirDetectionParams params)
 }
 
 //-----------------------------------------------------------------------------------------------
+Mat PrepareImShowGray(cv::Mat ImIn,  DirDetectionParams params)
+{
+    Mat ImToShow = ShowImage16Gray(ImIn, params.displayPCMin, params.displayPCMax);
+    DrawTilesOnImage(ImToShow, params);
+    return ImToShow;
+
+}
+//-----------------------------------------------------------------------------------------------
 void ShowDirectionSmall(Mat ImIn, float direction, DirDetectionParams params, float minNorm, float maxNorm)
 {
     Mat ImToShow = ShowImageF32PseudoColor(ImIn, minNorm, maxNorm);
@@ -196,11 +204,13 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
     float *CorrelationAvg = new float[stepNr];
 
     //Matrix declarations
-    Mat ImInF, ImToShow, SmallIm, COM, SmallImToShow;
+    Mat ImInF, ImToShow, ImToShowGray,  SmallIm, COM, SmallImToShow;
 
     if(params.showOutputImage)
+    {
         ImToShow = PrepareImShow(ImIn,params);
-
+        ImToShowGray = PrepareImShowGray(ImIn,params);
+    }
     ImIn.convertTo(ImInF, CV_32F);
 
     int maxX = ImInF.cols;
@@ -308,6 +318,7 @@ string DirEstimation(cv::Mat ImIn,  DirDetectionParams params, bool *stopCalc)
             if(params.showOutputImage)
             {
                 ShowDirection(ImToShow, y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength, params.imagesScale);
+                ShowDirectionGray(ImToShowGray, y, x, bestAngleCorAvg*params.angleStep, params.directionLineWidth, params.directionLineLength, params.imagesScale);
             }
             if(params.showTileOutputImage)
             {
